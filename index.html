@@ -134,8 +134,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f7f9fc url("assets/pattern.png") center / cover no-repeat;
+      background: #f7f9fc;
+      overflow: hidden;
       overscroll-behavior: contain;
+    }
+
+    #stage::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      inset: -32px;
+      background: #f7f9fc url("assets/pattern.png") center / cover no-repeat;
+      pointer-events: none;
+    }
+
+    #stage.is-video::after {
+      filter: blur(4px);
     }
 
     #stage.is-stub::before {
@@ -414,6 +428,7 @@
       const src = videos[n];
       if (src) {
         stage.classList.remove("is-stub");
+        stage.classList.add("is-video");
         stub.hidden = true;
         video.hidden = false;
         spinner.hidden = false;
@@ -424,6 +439,7 @@
         if (attempt) attempt.catch(() => { spinner.hidden = true; });
       } else {
         video.pause();
+        stage.classList.remove("is-video");
         stage.classList.add("is-stub");
         video.hidden = true;
         spinner.hidden = true;
@@ -438,7 +454,7 @@
       open = false;
       video.pause();
       stage.hidden = true;
-      stage.classList.remove("is-stub");
+      stage.classList.remove("is-stub", "is-video");
       document.body.classList.remove("locked");
       theme.setAttribute("content", "#f7f9fc");
     }
