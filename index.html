@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f3e4c2">
+  <meta name="theme-color" content="#f7f9fc">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Чекпоинты">
   <title>Чекпоинты</title>
@@ -13,11 +13,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --paper: #f3e4c2;
-      --ink: #1f3e7a;
+      --paper: #f7f9fc;
+      --ink: #1e3a70;
       --muted: #5c7094;
       --cyan: #7ac9d8;
       --cyan-edge: #4c97a6;
+      --route: #1e3a70;
     }
 
     * { box-sizing: border-box; }
@@ -44,7 +45,7 @@
       position: fixed;
       inset: 0;
       z-index: -1;
-      background: url("assets/sky.svg") center / cover no-repeat;
+      background: #f7f9fc url("assets/pattern.png") center / cover no-repeat;
     }
 
     main {
@@ -73,32 +74,16 @@
       overflow: visible;
     }
 
-    .title {
+    .sr-only {
       position: absolute;
-      z-index: 3;
-      left: 3.5%;
-      top: 1.6%;
-      margin: 0;
-      pointer-events: none;
-      background: rgba(251, 246, 234, 0.94);
-      border-radius: 18px;
-      padding: 8px 12px 9px;
-      box-shadow: 0 8px 18px rgba(40, 50, 70, 0.08);
-    }
-
-    .title h1 {
-      margin: 0;
-      font-size: clamp(18px, 5vw, 25px);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      line-height: 1;
-    }
-
-    .title p {
-      margin: 3px 0 0;
-      font-size: clamp(11px, 2.9vw, 13px);
-      font-weight: 800;
-      color: var(--muted);
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .cp {
@@ -141,24 +126,37 @@
     .cp:active { transform: translate(-50%, -50%) scale(0.95); }
 
     #stage {
+      --mascot-h: 36dvh;
       position: fixed;
       inset: 0;
       z-index: 20;
       width: 100%;
       height: 100dvh;
+      display: grid;
+      grid-template-rows: 1fr auto var(--mascot-h);
+      justify-items: center;
+      align-items: end;
+      background: #f7f9fc url("assets/pattern.png") center / cover no-repeat;
+      overscroll-behavior: contain;
+    }
+
+    #stage.is-stub {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #102033 url("assets/crew.jpg") center / cover no-repeat;
-      overscroll-behavior: contain;
     }
 
     #stage.is-stub::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(10, 16, 28, 0.58);
+      background: rgba(18, 32, 58, 0.28);
       z-index: 1;
+    }
+
+    #stage.is-stub .film,
+    #stage.is-stub #mascot {
+      display: none;
     }
 
     #close {
@@ -173,8 +171,8 @@
       padding: 0;
       display: grid;
       place-items: center;
-      background: rgba(255, 255, 255, 0.95);
-      color: #1a2744;
+      background: var(--ink);
+      color: #fff;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
       cursor: pointer;
       touch-action: manipulation;
@@ -187,9 +185,16 @@
       outline-offset: 3px;
     }
 
-    #video {
+    .film {
+      grid-row: 2;
       position: relative;
       z-index: 2;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    #video {
       display: block;
       width: 100%;
       height: auto;
@@ -198,6 +203,40 @@
       object-fit: contain;
       max-height: 100%;
     }
+
+    #mascot {
+      grid-row: 3;
+      position: relative;
+      width: min(92vw, 420px);
+      height: 100%;
+      pointer-events: none;
+    }
+
+    #mascot .pose {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      height: 96%;
+      width: auto;
+      max-width: none;
+      transform: translateX(var(--x));
+      opacity: 0;
+      filter: drop-shadow(0 12px 10px rgba(24, 42, 74, 0.16));
+      --x: -50%;
+    }
+
+    #mascot .pose.front { --x: -38%; opacity: 1; }
+
+    #stage.is-playing #mascot .pose {
+      opacity: 0;
+      animation: turn 5.4s linear infinite, bob 1.15s ease-in-out infinite;
+    }
+
+    #stage.is-playing #mascot .pose.front { animation-delay: 0s, 0s; }
+    #stage.is-playing #mascot .pose.side { animation-delay: -1.8s, -0.15s; }
+    #stage.is-playing #mascot .pose.back { animation-delay: -3.6s, -0.3s; }
+
+    #stage.is-paused #mascot .pose { animation-play-state: paused; }
 
     #spinner,
     #replay {
@@ -212,8 +251,8 @@
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      border: 4px solid rgba(255, 255, 255, 0.35);
-      border-top-color: #fff;
+      border: 4px solid rgba(30, 58, 112, 0.2);
+      border-top-color: var(--ink);
       animation: spin 0.8s linear infinite;
     }
 
@@ -317,115 +356,40 @@
 
     @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
+    @keyframes turn {
+      0% { opacity: 0; }
+      6% { opacity: 1; }
+      27% { opacity: 1; }
+      34% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateX(var(--x)) translateY(0) rotate(-1.2deg); }
+      50% { transform: translateX(var(--x)) translateY(-12px) rotate(1.2deg); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       #spinner { animation: none; }
       .cp, .cp:hover, .cp:active { transition: none; }
+      #stage.is-playing #mascot .pose { animation: none !important; opacity: 0; }
+      #stage.is-playing #mascot .pose.front,
+      #mascot .pose.front {
+        opacity: 1 !important;
+        animation: none !important;
+        transform: translateX(var(--x));
+      }
     }
   </style>
 </head>
 <body>
   <main>
     <div class="sheet">
+      <h1 class="sr-only">Чекпоинты</h1>
       <svg class="map" viewBox="0 0 390 780" aria-hidden="true" focusable="false">
-        <defs>
-          <filter id="lift" x="-8%" y="-5%" width="116%" height="110%" color-interpolation-filters="sRGB">
-            <feDropShadow dx="0" dy="2" stdDeviation="2.4" flood-color="#1c2a44" flood-opacity="0.18"/>
-          </filter>
-        </defs>
-        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path filter="url(#lift)" stroke="#efe8d8" stroke-width="70" d="M52 720C61.3 712.7 83 677.7 108 676C133 674.3 170.7 712 202 710C233.3 708 276 688 296 664C316 640 333.3 590 322 566C310.7 542 262.7 520 228 520C193.3 520 139.7 576.7 114 566C88.3 555.3 63.7 485 74 456C84.3 427 140.7 418 176 392C211.3 366 262.3 329.7 286 300C309.7 270.3 324 242.7 318 214C312 185.3 261.3 142.3 250 128"/>
-          <path stroke="#1a1a1a" stroke-width="56" d="M52 720C61.3 712.7 83 677.7 108 676C133 674.3 170.7 712 202 710C233.3 708 276 688 296 664C316 640 333.3 590 322 566C310.7 542 262.7 520 228 520C193.3 520 139.7 576.7 114 566C88.3 555.3 63.7 485 74 456C84.3 427 140.7 418 176 392C211.3 366 262.3 329.7 286 300C309.7 270.3 324 242.7 318 214C312 185.3 261.3 142.3 250 128"/>
-          <path stroke="#ffffff" stroke-width="2.6" stroke-dasharray="11 13" d="M52 720C61.3 712.7 83 677.7 108 676C133 674.3 170.7 712 202 710C233.3 708 276 688 296 664C316 640 333.3 590 322 566C310.7 542 262.7 520 228 520C193.3 520 139.7 576.7 114 566C88.3 555.3 63.7 485 74 456C84.3 427 140.7 418 176 392C211.3 366 262.3 329.7 286 300C309.7 270.3 324 242.7 318 214C312 185.3 261.3 142.3 250 128"/>
-        </g>
-        <g fill="none" stroke="#f4f5f6" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round">
-          <g transform="translate(155 693) rotate(20)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-          <g transform="translate(249 687) rotate(-26)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-          <g transform="translate(309 615) rotate(-75)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-          <g transform="translate(275 543) rotate(-154)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-          <g transform="translate(171 543) rotate(158)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-          <g transform="translate(94 511) rotate(-110)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-          <g transform="translate(125 424) rotate(-32)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-          <g transform="translate(231 346) rotate(-40)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-          <g transform="translate(302 257) rotate(-70)"><path d="M-11-5.5-4 0-11 5.5M-3-5.5 4 0-3 5.5M5-5.5 12 0 5 5.5"/></g>
-        </g>
-
-        <g transform="translate(4 628)">
-          <ellipse cx="58" cy="64" rx="48" ry="8" fill="#000" opacity="0.12"/>
-          <path fill="#3ecf86" d="M14 36c2-16 16-22 32-22 14 0 26 4 34 8l26 4c8 2 12 8 12 14v6c0 7-5 12-12 12H26c-10 0-16-5-16-12v-4z"/>
-          <path fill="#2eae6e" d="M46 16c8-1 18 2 24 6l22 6-6 16H40l6-28z"/>
-          <path fill="#dff4ff" d="M48 20c8 0 16 3 20 6l-4 12H42l6-18z"/>
-          <circle cx="58" cy="30" r="7.5" fill="#f6c7a4"/>
-          <path fill="#e39a45" d="M50 28c1-9 15-9 16 1-5-3-11-3-16-1z"/>
-          <circle cx="38" cy="34" r="6.5" fill="#f0a05a"/>
-          <path fill="#e08d48" d="M32 29l4 6-6 1zM44 29l-4 6 6 1z"/>
-          <circle cx="36" cy="34" r="1.1" fill="#3a2a22"/>
-          <circle cx="41" cy="34" r="1.1" fill="#3a2a22"/>
-          <circle cx="36" cy="52" r="11" fill="#242424"/>
-          <circle cx="36" cy="52" r="4.5" fill="#dedede"/>
-          <circle cx="92" cy="52" r="11" fill="#242424"/>
-          <circle cx="92" cy="52" r="4.5" fill="#dedede"/>
-          <circle cx="116" cy="40" r="3.2" fill="#ffe08a"/>
-        </g>
-
-        <g transform="translate(36 598)">
-          <rect x="-16" y="-18" width="32" height="36" rx="4" fill="#2f7de1" stroke="#fff" stroke-width="2"/>
-          <path fill="#fff" d="M2-8 8 0H4l2 8-8-8h3l-2-8z"/>
-        </g>
-
-        <g transform="translate(40 392)">
-          <circle r="16" fill="#ff4d4f" stroke="#fff" stroke-width="2.5"/>
-          <rect x="-8" y="-3.2" width="16" height="6.4" rx="2" fill="#fff"/>
-        </g>
-
-        <g transform="translate(346 392)">
-          <rect x="8" y="38" width="5" height="48" rx="1.5" fill="#66707a"/>
-          <rect x="0" y="0" width="21" height="42" rx="6" fill="#2c3138"/>
-          <circle cx="10.5" cy="11" r="4.2" fill="#ff5d5d" opacity="0.35"/>
-          <circle cx="10.5" cy="21" r="4.2" fill="#ffd15c" opacity="0.3"/>
-          <circle cx="10.5" cy="31" r="4.2" fill="#3ddc84"/>
-        </g>
-
-        <g transform="translate(250 214)">
-          <rect x="-15" y="-13" width="34" height="26" rx="4" fill="#2f7de1" stroke="#fff" stroke-width="2"/>
-          <path d="M-6 0h12M6 0l-5-5M6 0l-5 5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-
-        <g transform="translate(206 14)">
-          <ellipse cx="84" cy="124" rx="74" ry="7" fill="#000" opacity="0.1"/>
-          <rect x="34" y="62" width="108" height="58" rx="4" fill="#ffd056"/>
-          <rect x="34" y="62" width="108" height="8" fill="#f0b42e"/>
-          <rect x="44" y="76" width="46" height="28" rx="3" fill="#bfe9fb" stroke="#f7fcff" stroke-width="2"/>
-          <circle cx="68" cy="93" r="8" fill="#f4a15a"/>
-          <path fill="#e8924a" d="M60 86l5 7-7 1zM76 86l-5 7 7 1z"/>
-          <circle cx="65" cy="93" r="1.1" fill="#3a2a22"/>
-          <circle cx="71" cy="93" r="1.1" fill="#3a2a22"/>
-          <rect x="104" y="78" width="26" height="42" rx="2" fill="#fff7e4"/>
-          <circle cx="124" cy="100" r="1.7" fill="#e0a030"/>
-          <rect x="18" y="44" width="142" height="18" rx="4" fill="#ef4d4d"/>
-          <rect x="18" y="56" width="142" height="5" fill="#d63c3c"/>
-          <rect x="36" y="60" width="5" height="60" fill="#f3eee4"/>
-          <rect x="146" y="60" width="5" height="60" fill="#f3eee4"/>
-          <rect x="54" y="18" width="60" height="28" rx="6" fill="#ef4d4d"/>
-          <circle cx="84" cy="14" r="9" fill="#ffb703" stroke="#fff4d2" stroke-width="2"/>
-          <path fill="#ffe08a" d="M84 6c2 3 4 5 4 7a4 4 0 1 1-8 0c0-2 2-4 4-7z"/>
-          <rect x="0" y="72" width="24" height="44" rx="4" fill="#e23b3b"/>
-          <rect x="4" y="78" width="16" height="12" rx="2" fill="#e7f7ff"/>
-          <rect x="6" y="96" width="12" height="4" rx="1" fill="#ffd56a"/>
-          <path d="M24 86c8 1 10 12 4 18" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round"/>
-          <g transform="translate(72 98)">
-            <path fill="#3cbe78" d="M2 10h34c3 0 5 2 5 5v6H0v-6c0-3 1-5 2-5z"/>
-            <path fill="#dff6ff" d="M12 10c1-6 4-8 8-8h4c4 0 7 2 8 8z"/>
-            <circle cx="10" cy="21" r="4.2" fill="#242424"/>
-            <circle cx="30" cy="21" r="4.2" fill="#242424"/>
-          </g>
-          <path fill="#f2c14e" d="M138 40c8-10 18-8 20 0-8-2-14-1-20 0z"/>
-        </g>
+        <path fill="none" stroke="#1e3a70" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="8 11"
+          d="M52 720C61.3 712.7 83 677.7 108 676C133 674.3 170.7 712 202 710C233.3 708 276 688 296 664C316 640 333.3 590 322 566C310.7 542 262.7 520 228 520C193.3 520 139.7 576.7 114 566C88.3 555.3 63.7 485 74 456C84.3 427 140.7 418 176 392C211.3 366 262.3 329.7 286 300C309.7 270.3 324 242.7 318 214C312 185.3 261.3 142.3 250 128"/>
       </svg>
-
-      <div class="title">
-        <h1>Чекпоинты</h1>
-        <p>Нажми на кружок</p>
-      </div>
 
       <button class="cp" type="button" style="left:27.692%;top:86.667%" data-n="1">1</button>
       <button class="cp" type="button" style="left:51.795%;top:91.026%" data-n="2">2</button>
@@ -445,9 +409,16 @@
         <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
       </svg>
     </button>
-    <video id="video" hidden playsinline webkit-playsinline controls preload="auto"></video>
-    <div id="spinner" hidden></div>
-    <button id="replay" type="button" hidden>Ещё раз</button>
+    <div class="film">
+      <video id="video" hidden playsinline webkit-playsinline controls preload="auto"></video>
+      <div id="spinner" hidden></div>
+      <button id="replay" type="button" hidden>Ещё раз</button>
+    </div>
+    <div id="mascot" aria-hidden="true">
+      <img class="pose front" src="assets/borya-front.png" alt="">
+      <img class="pose side" src="assets/borya-side.png" alt="">
+      <img class="pose back" src="assets/borya-back.png" alt="">
+    </div>
     <p id="video-error" hidden>Не удалось открыть видео</p>
     <div id="stub" hidden>
       <svg class="stub-plane" viewBox="-32 -34 64 68" aria-hidden="true">
@@ -488,11 +459,14 @@
     function layoutVideo() {
       if (!open || video.hidden || !video.videoWidth) return;
       const bounds = stage.getBoundingClientRect();
+      const mascotH = Math.round(Math.min(bounds.height * 0.38, 340));
+      stage.style.setProperty("--mascot-h", mascotH + "px");
       const ratio = video.videoWidth / video.videoHeight;
+      const maxH = Math.max(140, bounds.height - mascotH);
       let width = bounds.width;
       let height = width / ratio;
-      if (height > bounds.height) {
-        height = bounds.height;
+      if (height > maxH) {
+        height = maxH;
         width = height * ratio;
       }
       video.style.width = width + "px";
@@ -506,10 +480,12 @@
       stage.hidden = false;
       replay.hidden = true;
       videoError.hidden = true;
-      theme.setAttribute("content", "#102033");
+      theme.setAttribute("content", "#f7f9fc");
       const src = videos[n];
       if (src) {
         stage.classList.remove("is-stub");
+        stage.classList.remove("is-playing");
+        stage.classList.remove("is-paused");
         stub.hidden = true;
         video.hidden = false;
         spinner.hidden = false;
@@ -520,6 +496,8 @@
         if (attempt) attempt.catch(() => { spinner.hidden = true; });
       } else {
         video.pause();
+        stage.classList.remove("is-playing");
+        stage.classList.remove("is-paused");
         stage.classList.add("is-stub");
         video.hidden = true;
         spinner.hidden = true;
@@ -534,9 +512,9 @@
       open = false;
       video.pause();
       stage.hidden = true;
-      stage.classList.remove("is-stub");
+      stage.classList.remove("is-stub", "is-playing", "is-paused");
       document.body.classList.remove("locked");
-      theme.setAttribute("content", "#f3e4c2");
+      theme.setAttribute("content", "#f7f9fc");
     }
 
     function openCheckpoint(n) {
@@ -563,9 +541,20 @@
     });
 
     video.addEventListener("loadedmetadata", layoutVideo);
-    video.addEventListener("playing", () => { spinner.hidden = true; replay.hidden = true; });
+    video.addEventListener("playing", () => {
+      spinner.hidden = true;
+      replay.hidden = true;
+      stage.classList.add("is-playing");
+      stage.classList.remove("is-paused");
+    });
     video.addEventListener("play", () => { replay.hidden = true; });
-    video.addEventListener("ended", () => { replay.hidden = false; });
+    video.addEventListener("pause", () => {
+      if (!video.ended) stage.classList.add("is-paused");
+    });
+    video.addEventListener("ended", () => {
+      replay.hidden = false;
+      stage.classList.remove("is-playing", "is-paused");
+    });
     video.addEventListener("error", () => {
       spinner.hidden = true;
       if (open && !video.hidden) videoError.hidden = false;
