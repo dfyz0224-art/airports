@@ -70,26 +70,22 @@
 
     .line {
       position: absolute;
-      left: 50%;
+      inset: 0;
       z-index: 0;
-      width: 4px;
-      margin-left: -2px;
-      border-radius: 3px;
-      background-image: repeating-linear-gradient(
-        to bottom,
-        var(--line) 0 8px,
-        transparent 8px 18px
-      );
+      width: 100%;
+      height: 100%;
+      overflow: visible;
       pointer-events: none;
     }
 
     .cp {
       position: relative;
       z-index: 1;
-      width: 100%;
+      width: fit-content;
+      max-width: min(68vw, 250px);
       border: 0;
-      border-radius: 16px;
-      padding: 10px 14px;
+      border-radius: 18px;
+      padding: 9px 14px;
       background: rgba(255, 255, 255, 0.94);
       color: var(--ink);
       font: inherit;
@@ -98,10 +94,14 @@
       line-height: 1.25;
       text-align: center;
       text-wrap: balance;
+      translate: var(--x) 0;
       cursor: pointer;
       box-shadow: 0 6px 16px rgba(16, 70, 100, 0.12);
       touch-action: manipulation;
     }
+
+    .cp:nth-of-type(odd) { --x: -38px; }
+    .cp:nth-of-type(even) { --x: 38px; }
 
     .cp:focus-visible {
       outline: 3px solid var(--ink);
@@ -109,10 +109,10 @@
     }
 
     @media (hover: hover) {
-      .cp:hover { transform: scale(1.02); }
+      .cp:hover { scale: 1.03; }
     }
 
-    .cp:active { transform: scale(0.98); }
+    .cp:active { scale: 0.98; }
 
     #stage {
       position: fixed;
@@ -311,7 +311,9 @@
 <body>
   <main class="route">
     <h1 class="sr-only">Чекпоинты</h1>
-    <div class="line" aria-hidden="true"></div>
+    <svg class="line" aria-hidden="true" focusable="false">
+      <polyline fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
+    </svg>
     <button class="cp" type="button" data-n="1">Парковка для семей с детьми</button>
     <button class="cp" type="button" data-n="2">Входной досмотр</button>
     <button class="cp" type="button" data-n="3">Регистрация</button>
@@ -371,13 +373,17 @@
     });
 
     function layoutLine() {
-      const start = document.querySelector('.cp[data-n="1"]').getBoundingClientRect();
-      const end = document.querySelector('.cp[data-n="9"]').getBoundingClientRect();
       const box = route.getBoundingClientRect();
-      const y1 = start.top + start.height / 2 - box.top;
-      const y9 = end.top + end.height / 2 - box.top;
-      line.style.top = Math.min(y1, y9) + "px";
-      line.style.height = Math.abs(y9 - y1) + "px";
+      const points = [...document.querySelectorAll(".cp")]
+        .sort((a, b) => Number(a.dataset.n) - Number(b.dataset.n))
+        .map((button) => {
+          const rect = button.getBoundingClientRect();
+          const x = rect.left + rect.width / 2 - box.left;
+          const y = rect.top + rect.height / 2 - box.top;
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        })
+        .join(" ");
+      line.querySelector("polyline").setAttribute("points", points);
     }
 
     function layoutVideo() {
