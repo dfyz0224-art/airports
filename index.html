@@ -3,22 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f7f9fc">
+  <meta name="theme-color" content="#b9e7f6">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Чекпоинты">
   <title>Чекпоинты</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f3e7a'/%3E%3Cpath fill='white' d='M32 6c1.6 0 2.8 3 2.8 8v7l12 4c7 2 9 6 9 10l-1 4-20-3v9l7 5v4l-10-3-10 3v-4l7-5v-9l-20 3-1-4c0-4 2-8 9-10l12-4v-7c0-5 1.2-8 2.8-8z'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23145680'/%3E%3Cpath fill='white' d='M32 6c1.6 0 2.8 3 2.8 8v7l12 4c7 2 9 6 9 10l-1 4-20-3v9l7 5v4l-10-3-10 3v-4l7-5v-9l-20 3-1-4c0-4 2-8 9-10l12-4v-7c0-5 1.2-8 2.8-8z'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --paper: #f7f9fc;
-      --ink: #1e3a70;
-      --muted: #5c7094;
-      --cyan: #7ac9d8;
-      --cyan-edge: #4c97a6;
-      --route: #1e3a70;
+      --paper: #b9e7f6;
+      --ink: #143d5c;
+      --muted: #3d6d88;
+      --line: #14608a;
     }
 
     * { box-sizing: border-box; }
@@ -40,40 +38,6 @@
 
     body.locked { overflow: hidden; }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background: #f7f9fc url("assets/pattern.png") center / cover no-repeat;
-    }
-
-    main {
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding:
-        env(safe-area-inset-top)
-        env(safe-area-inset-right)
-        env(safe-area-inset-bottom)
-        env(safe-area-inset-left);
-    }
-
-    .sheet {
-      position: relative;
-      width: min(440px, 100%, max(300px, calc((100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8px) * 390 / 780)));
-      margin-block: auto;
-      user-select: none;
-    }
-
-    .sheet svg.map {
-      display: block;
-      width: 100%;
-      height: auto;
-      overflow: visible;
-    }
-
     .sr-only {
       position: absolute;
       width: 1px;
@@ -86,31 +50,56 @@
       border: 0;
     }
 
-    .cp {
+    .route {
+      position: relative;
+      width: min(440px, 100%);
+      min-height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding:
+        calc(16px + env(safe-area-inset-top))
+        calc(18px + env(safe-area-inset-right))
+        calc(16px + env(safe-area-inset-bottom))
+        calc(18px + env(safe-area-inset-left));
+      user-select: none;
+    }
+
+    .line {
       position: absolute;
-      z-index: 4;
-      left: 0;
-      top: 0;
-      width: 15%;
-      aspect-ratio: 1;
-      transform: translate(-50%, -50%);
-      border: 3px solid var(--cyan-edge);
-      border-radius: 50%;
-      padding: 0;
-      background: var(--cyan);
-      color: #fff;
+      left: 50%;
+      z-index: 0;
+      width: 4px;
+      margin-left: -2px;
+      border-radius: 3px;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--line) 0 8px,
+        transparent 8px 18px
+      );
+      pointer-events: none;
+    }
+
+    .cp {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--ink);
       font: inherit;
-      font-weight: 900;
-      font-size: clamp(20px, 6.4vw, 30px);
-      line-height: 1;
-      letter-spacing: -0.04em;
-      display: grid;
-      place-items: center;
+      font-weight: 800;
+      font-size: clamp(14px, 3.8vw, 17px);
+      line-height: 1.25;
+      text-align: center;
+      text-wrap: balance;
       cursor: pointer;
-      box-shadow:
-        inset 0 -3px 0 rgba(32, 110, 130, 0.18),
-        0 2px 0 rgba(20, 40, 60, 0.1),
-        0 7px 12px rgba(20, 40, 70, 0.14);
+      box-shadow: 0 6px 16px rgba(16, 70, 100, 0.12);
       touch-action: manipulation;
     }
 
@@ -120,10 +109,10 @@
     }
 
     @media (hover: hover) {
-      .cp:hover { transform: translate(-50%, -50%) scale(1.06); }
+      .cp:hover { transform: scale(1.02); }
     }
 
-    .cp:active { transform: translate(-50%, -50%) scale(0.95); }
+    .cp:active { transform: scale(0.98); }
 
     #stage {
       position: fixed;
@@ -134,29 +123,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f7f9fc;
+      background: var(--paper);
       overflow: hidden;
       overscroll-behavior: contain;
-    }
-
-    #stage::after {
-      content: "";
-      position: absolute;
-      z-index: 0;
-      inset: -32px;
-      background: #f7f9fc url("assets/pattern.png") center / cover no-repeat;
-      pointer-events: none;
-    }
-
-    #stage.is-video::after {
-      filter: blur(4px);
     }
 
     #stage.is-stub::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(18, 32, 58, 0.28);
+      background: rgba(16, 55, 80, 0.22);
       z-index: 1;
     }
 
@@ -178,7 +154,7 @@
       place-items: center;
       background: var(--ink);
       color: #fff;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
       cursor: pointer;
       touch-action: manipulation;
     }
@@ -222,14 +198,14 @@
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      border: 4px solid rgba(30, 58, 112, 0.2);
+      border: 4px solid rgba(20, 61, 92, 0.2);
       border-top-color: var(--ink);
       animation: spin 0.8s linear infinite;
     }
 
     #replay {
       border: 0;
-      background: rgba(255, 250, 242, 0.96);
+      background: rgba(255, 255, 255, 0.96);
       color: var(--ink);
       font: inherit;
       font-weight: 900;
@@ -237,7 +213,7 @@
       border-radius: 999px;
       padding: 12px 22px;
       min-height: 48px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
       cursor: pointer;
       touch-action: manipulation;
     }
@@ -247,12 +223,12 @@
       z-index: 2;
       width: min(86vw, 340px);
       margin: 24px;
-      background: #fffaf2;
+      background: #f7fcff;
       color: var(--ink);
       border-radius: 28px;
       padding: 26px 22px 22px;
       text-align: center;
-      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+      box-shadow: 0 18px 50px rgba(16, 55, 80, 0.22);
     }
 
     .stub-plane {
@@ -266,10 +242,9 @@
     #stub .eyebrow {
       margin: 0;
       font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 13px;
-      color: #3d86a2;
+      font-size: 15px;
+      line-height: 1.3;
+      color: #1d6f96;
     }
 
     #stub h2 {
@@ -319,7 +294,7 @@
       margin: 0;
       padding: 10px 14px;
       border-radius: 12px;
-      background: rgba(255, 250, 242, 0.95);
+      background: rgba(255, 255, 255, 0.95);
       color: #8d2d2d;
       font-weight: 800;
       text-align: center;
@@ -334,24 +309,18 @@
   </style>
 </head>
 <body>
-  <main>
-    <div class="sheet">
-      <h1 class="sr-only">Чекпоинты</h1>
-      <svg class="map" viewBox="0 0 390 780" aria-hidden="true" focusable="false">
-        <path fill="none" stroke="#1e3a70" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="8 11"
-          d="M104.4 710C135.7 689.6 167.1 664.6 198.4 648.7C229.7 632.8 272.4 635.7 292.4 614.7C312.4 593.7 329.7 551.1 318.4 522.8C307.1 494.4 259.1 444.5 224.4 444.5C189.7 444.5 136.1 540.9 110.4 522.8C84.7 504.6 60.1 384.9 70.4 335.5C80.7 286.2 137.1 270.9 172.4 226.6C207.7 182.3 245.7 122.2 282.4 70"/>
-      </svg>
-
-      <button class="cp" type="button" style="left:26.769%;top:91.026%" data-n="1">1</button>
-      <button class="cp" type="button" style="left:50.872%;top:83.17%" data-n="2">2</button>
-      <button class="cp" type="button" style="left:74.974%;top:78.805%" data-n="3">3</button>
-      <button class="cp" type="button" style="left:81.641%;top:67.021%" data-n="4">4</button>
-      <button class="cp" type="button" style="left:57.538%;top:56.983%" data-n="5">5</button>
-      <button class="cp" type="button" style="left:28.308%;top:67.021%" data-n="6">6</button>
-      <button class="cp" type="button" style="left:18.051%;top:43.017%" data-n="7">7</button>
-      <button class="cp" type="button" style="left:44.205%;top:29.051%" data-n="8">8</button>
-      <button class="cp" type="button" style="left:72.41%;top:8.974%" data-n="9">9</button>
-    </div>
+  <main class="route">
+    <h1 class="sr-only">Чекпоинты</h1>
+    <div class="line" aria-hidden="true"></div>
+    <button class="cp" type="button" data-n="1">Парковка для семей с детьми</button>
+    <button class="cp" type="button" data-n="2">Входной досмотр</button>
+    <button class="cp" type="button" data-n="3">Регистрация</button>
+    <button class="cp" type="button" data-n="4">Комната матери и ребенка</button>
+    <button class="cp" type="button" data-n="5">Предполетный досмотр</button>
+    <button class="cp" type="button" data-n="6">Сервисы для пассажиров с детьми</button>
+    <button class="cp" type="button" data-n="7">Приоритетная посадка в самолет</button>
+    <button class="cp" type="button" data-n="8">Зона прилета</button>
+    <button class="cp" type="button" data-n="9">Комплексная поддержка пассажиров с детьми</button>
   </main>
 
   <div id="stage" hidden>
@@ -370,7 +339,7 @@
       <svg class="stub-plane" viewBox="-32 -34 64 68" aria-hidden="true">
         <path d="M0-30c2 0 3.4 4 3.4 12l.2 8 13-4c8-2 14 2 14 8l-1 4-25 3v8l8 5v3l-10-3-10 3v-3l8-5v-8l-25-3-1-4c0-6 6-10 14-8l13 4 .2-8c0-8 1.4-12 3.4-12z"/>
       </svg>
-      <p class="eyebrow">Чекпоинт <span id="stub-num">2</span></p>
+      <p class="eyebrow" id="stub-name">Входной досмотр</p>
       <h2>Видео ещё в пути</h2>
       <p class="note">Ролик для этой точки появится позже.</p>
       <button id="back" type="button">На карту</button>
@@ -387,20 +356,29 @@
     const stub = document.querySelector("#stub");
     const spinner = document.querySelector("#spinner");
     const replay = document.querySelector("#replay");
-    const stubNum = document.querySelector("#stub-num");
+    const stubName = document.querySelector("#stub-name");
     const videoError = document.querySelector("#video-error");
     const theme = document.querySelector('meta[name="theme-color"]');
+    const route = document.querySelector(".route");
+    const line = document.querySelector(".line");
     let open = false;
     let closing = false;
 
     document.querySelectorAll(".cp").forEach((button) => {
       const n = button.dataset.n;
-      button.setAttribute(
-        "aria-label",
-        n === "1" ? "Чекпоинт 1, смотреть видео" : `Чекпоинт ${n}`
-      );
+      if (n === "1") button.setAttribute("aria-label", button.textContent + ", смотреть видео");
       button.addEventListener("click", () => openCheckpoint(Number(n)));
     });
+
+    function layoutLine() {
+      const start = document.querySelector('.cp[data-n="1"]').getBoundingClientRect();
+      const end = document.querySelector('.cp[data-n="9"]').getBoundingClientRect();
+      const box = route.getBoundingClientRect();
+      const y1 = start.top + start.height / 2 - box.top;
+      const y9 = end.top + end.height / 2 - box.top;
+      line.style.top = Math.min(y1, y9) + "px";
+      line.style.height = Math.abs(y9 - y1) + "px";
+    }
 
     function layoutVideo() {
       if (!open || video.hidden || !video.videoWidth) return;
@@ -424,11 +402,10 @@
       stage.hidden = false;
       replay.hidden = true;
       videoError.hidden = true;
-      theme.setAttribute("content", "#f7f9fc");
+      theme.setAttribute("content", "#b9e7f6");
       const src = videos[n];
       if (src) {
         stage.classList.remove("is-stub");
-        stage.classList.add("is-video");
         stub.hidden = true;
         video.hidden = false;
         spinner.hidden = false;
@@ -439,12 +416,11 @@
         if (attempt) attempt.catch(() => { spinner.hidden = true; });
       } else {
         video.pause();
-        stage.classList.remove("is-video");
         stage.classList.add("is-stub");
         video.hidden = true;
         spinner.hidden = true;
         stub.hidden = false;
-        stubNum.textContent = String(n);
+        stubName.textContent = document.querySelector(`.cp[data-n="${n}"]`).textContent;
       }
       document.querySelector("#close").focus();
     }
@@ -454,9 +430,9 @@
       open = false;
       video.pause();
       stage.hidden = true;
-      stage.classList.remove("is-stub", "is-video");
+      stage.classList.remove("is-stub");
       document.body.classList.remove("locked");
-      theme.setAttribute("content", "#f7f9fc");
+      theme.setAttribute("content", "#b9e7f6");
     }
 
     function openCheckpoint(n) {
@@ -495,7 +471,10 @@
       spinner.hidden = true;
       if (open && !video.hidden) videoError.hidden = false;
     });
-    window.addEventListener("resize", layoutVideo);
+    window.addEventListener("resize", () => {
+      layoutLine();
+      layoutVideo();
+    });
     window.addEventListener("popstate", () => {
       closing = false;
       hideStage();
@@ -503,6 +482,9 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && open) requestClose();
     });
+
+    layoutLine();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutLine);
   </script>
 </body>
 </html>
