@@ -97,21 +97,25 @@
 
     .mark {
       position: absolute;
-      top: 50%;
-      width: 26px;
-      height: 26px;
+      bottom: calc(100% + 4px);
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fff;
       color: var(--ink);
-      translate: 0 -50%;
+      box-shadow: 0 5px 12px rgba(16, 70, 100, 0.18);
       pointer-events: none;
     }
 
-    .cp[data-side="left"] .mark { right: calc(100% + 6px); }
-    .cp[data-side="right"] .mark { left: calc(100% + 6px); }
+    .cp[data-side="left"] .mark { left: 0; }
+    .cp[data-side="right"] .mark { right: 0; }
 
     .mark svg {
       display: block;
-      width: 100%;
-      height: 100%;
+      width: 34px;
+      height: 34px;
       overflow: visible;
     }
 
@@ -327,39 +331,39 @@
       <path fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
     </svg>
     <button class="cp" type="button" data-n="1" data-side="left">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="3.5" y="3.5" width="25" height="25" rx="4" fill="#14608a"/><path d="M12.2 23.6V8.6h6.2a4.7 4.7 0 0 1 0 9.4h-6.2" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="3.5" y="3.5" width="25" height="25" rx="4" fill="#14608a"/><path d="M12.2 23.6V8.6h6.2a4.7 4.7 0 0 1 0 9.4h-6.2" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="name">Парковка для семей с детьми</span>
     </button>
     <button class="cp" type="button" data-n="2" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26V12a8 8 0 0 1 16 0v14"/><path d="M8 17.5h16"/><circle cx="16" cy="17.5" r="1.3" fill="currentColor" stroke="none"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26V12a8 8 0 0 1 16 0v14"/><path d="M8 17.5h16"/><circle cx="16" cy="17.5" r="1.3" fill="currentColor" stroke="none"/></svg></span>
       <span class="name">Входной досмотр</span>
     </button>
     <button class="cp" type="button" data-n="3" data-side="left">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="16" height="12" rx="2"/><path d="M11.5 11h9M11.5 14.5h5.5"/><path d="M6 23h20M9 23v3M23 23v3"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="16" height="12" rx="2"/><path d="M11.5 11h9M11.5 14.5h5.5"/><path d="M6 23h20M9 23v3M23 23v3"/></svg></span>
       <span class="name">Регистрация</span>
     </button>
     <button class="cp" type="button" data-n="4" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="2.5"/><path d="M7.2 25v-3.4a4.8 4.8 0 0 1 9.6 0V25"/><circle cx="22.6" cy="12.2" r="1.9"/><path d="M19.2 25v-2.4a3.4 3.4 0 0 1 6.8 0V25"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="2.5"/><path d="M7.2 25v-3.4a4.8 4.8 0 0 1 9.6 0V25"/><circle cx="22.6" cy="12.2" r="1.9"/><path d="M19.2 25v-2.4a3.4 3.4 0 0 1 6.8 0V25"/></svg></span>
       <span class="name">Комната матери и ребенка</span>
     </button>
     <button class="cp" type="button" data-n="5" data-side="left">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h18l-2 11H9L7 13z"/><path d="M5.5 13h21"/><path d="M12 13V8.5h8V13"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h18l-2 11H9L7 13z"/><path d="M5.5 13h21"/><path d="M12 13V8.5h8V13"/></svg></span>
       <span class="name">Предполетный досмотр</span>
     </button>
     <button class="cp" type="button" data-n="6" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 11V7.5h5"/><path d="M11 11h11l2 8H10.5L11 11z"/><circle cx="13" cy="23.5" r="2.1"/><circle cx="21.5" cy="23.5" r="2.1"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 11V7.5h5"/><path d="M11 11h11l2 8H10.5L11 11z"/><circle cx="13" cy="23.5" r="2.1"/><circle cx="21.5" cy="23.5" r="2.1"/></svg></span>
       <span class="name">Сервисы для пассажиров с детьми</span>
     </button>
     <button class="cp" type="button" data-n="7" data-side="left">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h8.5L18 12h4l-3.2 6H25l2.2 2.2h-4.2L21 25h-3.2l2-4.8H4z" fill="currentColor" stroke="none"/><path d="M23 7.5l3.2 3.2L29.4 7.5"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h8.5L18 12h4l-3.2 6H25l2.2 2.2h-4.2L21 25h-3.2l2-4.8H4z" fill="currentColor" stroke="none"/><path d="M23 7.5l3.2 3.2L29.4 7.5"/></svg></span>
       <span class="name">Приоритетная посадка в самолет</span>
     </button>
     <button class="cp" type="button" data-n="8" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 25h22"/><path d="M7 20.5 18 10l3.2 1.2-4.4 9.3H23l2.2 2H7z" fill="currentColor" stroke="none"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 25h22"/><path d="M7 20.5 18 10l3.2 1.2-4.4 9.3H23l2.2 2H7z" fill="currentColor" stroke="none"/></svg></span>
       <span class="name">Зона прилета</span>
     </button>
     <button class="cp" type="button" data-n="9" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="8" r="2.6"/><path d="M9.5 26v-4.2a6.5 6.5 0 0 1 13 0V26"/><path d="M16 14.2c.7-1.3 2.5-1.6 3.4-.4.8 1 .4 2.2-1.1 3.5L16 19.2l-2.3-1.9c-1.5-1.3-1.9-2.5-1.1-3.5.9-1.2 2.7-.9 3.4.4z" fill="currentColor" stroke="none"/></svg></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="8" r="2.6"/><path d="M9.5 26v-4.2a6.5 6.5 0 0 1 13 0V26"/><path d="M16 14.2c.7-1.3 2.5-1.6 3.4-.4.8 1 .4 2.2-1.1 3.5L16 19.2l-2.3-1.9c-1.5-1.3-1.9-2.5-1.1-3.5.9-1.2 2.7-.9 3.4.4z" fill="currentColor" stroke="none"/></svg></span>
       <span class="name">Комплексная поддержка пассажиров с детьми</span>
     </button>
   </main>
@@ -472,18 +476,19 @@
       const ids = [9, 8, 7, 6, 5, 4, 3, 2, 1];
       const buttons = ids.map((id) => document.querySelector(`.cp[data-n="${id}"]`));
       const heights = buttons.map((button) => button.offsetHeight);
+      const iconH = 46;
       const inner = route.clientHeight - padTop - padBottom;
-      const free = Math.max(0, inner - heights.reduce((sum, height) => sum + height, 0));
+      const free = Math.max(0, inner - heights.reduce((sum, height) => sum + height, 0) - iconH * buttons.length);
       const weightSum = gapWeights.reduce((sum, weight) => sum + weight, 0);
       const half = route.clientWidth / 2;
       let y = padTop;
       buttons.forEach((button, index) => {
-        const room = Math.max(0, half - button.offsetWidth / 2 - 40);
+        const room = Math.max(0, half - button.offsetWidth / 2 - 12);
         const x = Math.max(-room, Math.min(room, shifts[ids[index]]));
-        button.style.top = y + "px";
+        button.style.top = (y + iconH) + "px";
         button.style.translate = `calc(-50% + ${x}px) 0`;
         button.dataset.side = x < 0 ? "left" : "right";
-        y += heights[index];
+        y += iconH + heights[index];
         if (index < gapWeights.length) y += free * gapWeights[index] / weightSum;
       });
       layoutLine();
