@@ -53,18 +53,13 @@
     .route {
       position: relative;
       width: min(440px, 100%);
-      min-height: 100dvh;
+      height: 100dvh;
       margin: 0 auto;
-      display: flex;
-      flex-direction: column-reverse;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
       padding:
         calc(16px + env(safe-area-inset-top))
-        calc(18px + env(safe-area-inset-right))
+        calc(14px + env(safe-area-inset-right))
         calc(16px + env(safe-area-inset-bottom))
-        calc(18px + env(safe-area-inset-left));
+        calc(14px + env(safe-area-inset-left));
       user-select: none;
     }
 
@@ -79,10 +74,11 @@
     }
 
     .cp {
-      position: relative;
+      position: absolute;
       z-index: 1;
+      left: 50%;
       width: fit-content;
-      max-width: min(68vw, 250px);
+      max-width: calc(100% - 24px);
       border: 0;
       border-radius: 18px;
       padding: 9px 14px;
@@ -93,15 +89,11 @@
       font-size: clamp(14px, 3.8vw, 17px);
       line-height: 1.25;
       text-align: center;
-      text-wrap: balance;
-      translate: var(--x) 0;
+      translate: -50% 0;
       cursor: pointer;
       box-shadow: 0 6px 16px rgba(16, 70, 100, 0.12);
       touch-action: manipulation;
     }
-
-    .cp:nth-of-type(odd) { --x: -38px; }
-    .cp:nth-of-type(even) { --x: 38px; }
 
     .cp:focus-visible {
       outline: 3px solid var(--ink);
@@ -312,7 +304,7 @@
   <main class="route">
     <h1 class="sr-only">Чекпоинты</h1>
     <svg class="line" aria-hidden="true" focusable="false">
-      <polyline fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
+      <path fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
     </svg>
     <button class="cp" type="button" data-n="1">Парковка для семей с детьми</button>
     <button class="cp" type="button" data-n="2">Входной досмотр</button>
@@ -366,11 +358,87 @@
     let open = false;
     let closing = false;
 
+    const labels = new Map();
+    const ruler = document.createElement("span");
+    ruler.style.cssText = "position:absolute;left:-9999px;top:0;white-space:nowrap;visibility:hidden;pointer-events:none;";
+    document.body.appendChild(ruler);
+
+    const shifts = { 1: -24, 2: 62, 3: -76, 4: 30, 5: -48, 6: 38, 7: -16, 8: 70, 9: 44 };
+    const gapWeights = [1.4, 0.58, 1.62, 0.74, 1.3, 0.52, 1.48, 0.96];
+
     document.querySelectorAll(".cp").forEach((button) => {
       const n = button.dataset.n;
-      if (n === "1") button.setAttribute("aria-label", button.textContent + ", смотреть видео");
+      const label = button.textContent.trim();
+      labels.set(button, label);
+      button.setAttribute("aria-label", n === "1" ? label + ", смотреть видео" : label);
       button.addEventListener("click", () => openCheckpoint(Number(n)));
     });
+
+    function measure(text, button) {
+      ruler.textContent = text;
+      ruler.style.font = getComputedStyle(button).font;
+      return ruler.offsetWidth;
+    }
+
+    function fitLabel(button) {
+      const words = labels.get(button).split(/\s+/);
+      const style = getComputedStyle(button);
+      const pad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+      const limit = Math.min(route.clientWidth - 88, 260);
+      const lineOf = (list) => measure(list.join(" "), button);
+      button.style.maxWidth = "none";
+      const hug = () => {
+        const range = document.createRange();
+        range.selectNodeContents(button);
+        const widest = Math.max(...[...range.getClientRects()].map((rect) => rect.width).filter((width) => width > 2));
+        button.style.width = Math.ceil(widest + pad) + "px";
+      };
+      if (words.length < 2 || lineOf(words) + pad <= limit) {
+        button.replaceChildren(document.createTextNode(labels.get(button)));
+        button.style.width = Math.ceil(lineOf(words) + pad + 8) + "px";
+        hug();
+        return;
+      }
+      let best = Infinity;
+      let split = 1;
+      for (let i = 1; i < words.length; i++) {
+        const widest = Math.max(lineOf(words.slice(0, i)), lineOf(words.slice(i)));
+        if (widest < best) {
+          best = widest;
+          split = i;
+        }
+      }
+      button.replaceChildren(
+        document.createTextNode(words.slice(0, split).join(" ")),
+        document.createElement("br"),
+        document.createTextNode(words.slice(split).join(" "))
+      );
+      button.style.width = Math.ceil(best + pad + 8) + "px";
+      hug();
+    }
+
+    function layoutStops() {
+      document.querySelectorAll(".cp").forEach(fitLabel);
+      const padTop = parseFloat(getComputedStyle(route).paddingTop);
+      const padBottom = parseFloat(getComputedStyle(route).paddingBottom);
+      const ids = [9, 8, 7, 6, 5, 4, 3, 2, 1];
+      const buttons = ids.map((id) => document.querySelector(`.cp[data-n="${id}"]`));
+      const heights = buttons.map((button) => button.offsetHeight);
+      const inner = route.clientHeight - padTop - padBottom;
+      const free = Math.max(0, inner - heights.reduce((sum, height) => sum + height, 0));
+      const weightSum = gapWeights.reduce((sum, weight) => sum + weight, 0);
+      const half = route.clientWidth / 2;
+      let y = padTop;
+      buttons.forEach((button, index) => {
+        const room = Math.max(0, half - button.offsetWidth / 2 - 10);
+        const x = Math.max(-room, Math.min(room, shifts[ids[index]]));
+        button.style.top = y + "px";
+        button.style.translate = `calc(-50% + ${x}px) 0`;
+        y += heights[index];
+        if (index < gapWeights.length) y += free * gapWeights[index] / weightSum;
+      });
+      layoutLine();
+    }
 
     function layoutLine() {
       const box = route.getBoundingClientRect();
@@ -378,12 +446,25 @@
         .sort((a, b) => Number(a.dataset.n) - Number(b.dataset.n))
         .map((button) => {
           const rect = button.getBoundingClientRect();
-          const x = rect.left + rect.width / 2 - box.left;
-          const y = rect.top + rect.height / 2 - box.top;
-          return `${x.toFixed(1)},${y.toFixed(1)}`;
-        })
-        .join(" ");
-      line.querySelector("polyline").setAttribute("points", points);
+          return {
+            x: rect.left + rect.width / 2 - box.left,
+            y: rect.top + rect.height / 2 - box.top
+          };
+        });
+      const tension = 0.28;
+      let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[i - 1] || points[i];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2] || points[i + 1];
+        const c1x = p1.x + (p2.x - p0.x) * tension;
+        const c1y = p1.y + (p2.y - p0.y) * tension;
+        const c2x = p2.x - (p3.x - p1.x) * tension;
+        const c2y = p2.y - (p3.y - p1.y) * tension;
+        d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+      }
+      line.querySelector("path").setAttribute("d", d);
     }
 
     function layoutVideo() {
@@ -426,7 +507,7 @@
         video.hidden = true;
         spinner.hidden = true;
         stub.hidden = false;
-        stubName.textContent = document.querySelector(`.cp[data-n="${n}"]`).textContent;
+        stubName.textContent = labels.get(document.querySelector(`.cp[data-n="${n}"]`));
       }
       document.querySelector("#close").focus();
     }
@@ -478,7 +559,7 @@
       if (open && !video.hidden) videoError.hidden = false;
     });
     window.addEventListener("resize", () => {
-      layoutLine();
+      layoutStops();
       layoutVideo();
     });
     window.addEventListener("popstate", () => {
@@ -489,8 +570,8 @@
       if (event.key === "Escape" && open) requestClose();
     });
 
-    layoutLine();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutLine);
+    layoutStops();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutStops);
   </script>
 </body>
 </html>
