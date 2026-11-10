@@ -197,6 +197,43 @@
       align-items: center;
     }
 
+    #stage.is-video .film {
+      flex-direction: column;
+      height: 100%;
+      box-sizing: border-box;
+      padding:
+        calc(68px + env(safe-area-inset-top))
+        0
+        calc(18px + env(safe-area-inset-bottom));
+      gap: 16px;
+    }
+
+    .brand {
+      width: min(84vw, 340px);
+      height: auto;
+      display: block;
+    }
+
+    .screen {
+      position: relative;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .points {
+      width: min(92vw, 420px);
+      margin: 0;
+      padding: 0 22px 0 40px;
+      color: var(--ink);
+      font-weight: 800;
+      font-size: clamp(15px, 4.1vw, 18px);
+      line-height: 1.35;
+    }
+
+    .points li + li {
+      margin-top: 8px;
+    }
+
     #video {
       display: block;
       width: 100%;
@@ -381,9 +418,17 @@
       </svg>
     </button>
     <div class="film">
-      <video id="video" hidden playsinline webkit-playsinline controls preload="auto"></video>
-      <div id="spinner" hidden></div>
-      <button id="replay" type="button" hidden>Ещё раз</button>
+      <img class="brand" src="assets/logo.png" alt="Аэропорты Регионов" hidden>
+      <div class="screen">
+        <video id="video" hidden playsinline webkit-playsinline controls preload="auto"></video>
+        <div id="spinner" hidden></div>
+        <button id="replay" type="button" hidden>Ещё раз</button>
+      </div>
+      <ul class="points" hidden>
+        <li>Отдельные места рядом с терминалом</li>
+        <li>Специальная навигация и знаки</li>
+        <li>Детская площадка на привокзальной площади</li>
+      </ul>
     </div>
     <p id="video-error" hidden>Не удалось открыть видео</p>
     <div id="stub" hidden>
@@ -403,6 +448,9 @@
     };
 
     const stage = document.querySelector("#stage");
+    const film = document.querySelector(".film");
+    const brand = document.querySelector(".brand");
+    const points = document.querySelector(".points");
     const video = document.querySelector("#video");
     const stub = document.querySelector("#stub");
     const spinner = document.querySelector("#spinner");
@@ -546,9 +594,15 @@
     function layoutVideo() {
       if (!open || video.hidden || !video.videoWidth) return;
       const bounds = stage.getBoundingClientRect();
+      const filmStyle = getComputedStyle(film);
+      const padY = parseFloat(filmStyle.paddingTop) + parseFloat(filmStyle.paddingBottom);
+      const gap = parseFloat(filmStyle.rowGap || filmStyle.gap) || 0;
+      const extras = [brand, points].reduce((sum, el) => sum + (el.hidden ? 0 : el.offsetHeight), 0);
+      const visible = [brand, points].filter((el) => !el.hidden).length + 1;
+      const maxH = Math.max(110, bounds.height - padY - extras - gap * (visible - 1) - 4);
+      const innerW = bounds.width - parseFloat(filmStyle.paddingLeft) - parseFloat(filmStyle.paddingRight);
       const ratio = video.videoWidth / video.videoHeight;
-      const maxH = Math.max(140, bounds.height - 24);
-      let width = bounds.width;
+      let width = innerW;
       let height = width / ratio;
       if (height > maxH) {
         height = maxH;
@@ -571,6 +625,9 @@
         stage.classList.remove("is-stub");
         stage.classList.add("is-video");
         theme.setAttribute("content", "#a3d0e0");
+        const parking = n === 1;
+        brand.hidden = !parking;
+        points.hidden = !parking;
         stub.hidden = true;
         video.hidden = false;
         spinner.hidden = false;
@@ -581,6 +638,8 @@
         if (attempt) attempt.catch(() => { spinner.hidden = true; });
       } else {
         video.pause();
+        brand.hidden = true;
+        points.hidden = true;
         stage.classList.remove("is-video");
         stage.classList.add("is-stub");
         theme.setAttribute("content", "#b9e7f6");
@@ -627,6 +686,7 @@
     });
 
     video.addEventListener("loadedmetadata", layoutVideo);
+    brand.addEventListener("load", layoutVideo);
     video.addEventListener("playing", () => {
       spinner.hidden = true;
       replay.hidden = true;
