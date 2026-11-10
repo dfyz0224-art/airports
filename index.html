@@ -146,6 +146,10 @@
       overscroll-behavior: contain;
     }
 
+    #stage.is-video {
+      background: #a3d0e0;
+    }
+
     #stage.is-stub::before {
       content: "";
       position: absolute;
@@ -565,6 +569,8 @@
       const src = videos[n];
       if (src) {
         stage.classList.remove("is-stub");
+        stage.classList.add("is-video");
+        theme.setAttribute("content", "#a3d0e0");
         stub.hidden = true;
         video.hidden = false;
         spinner.hidden = false;
@@ -575,7 +581,9 @@
         if (attempt) attempt.catch(() => { spinner.hidden = true; });
       } else {
         video.pause();
+        stage.classList.remove("is-video");
         stage.classList.add("is-stub");
+        theme.setAttribute("content", "#b9e7f6");
         video.hidden = true;
         spinner.hidden = true;
         stub.hidden = false;
@@ -590,6 +598,7 @@
       video.pause();
       stage.hidden = true;
       stage.classList.remove("is-stub");
+      stage.classList.remove("is-video");
       document.body.classList.remove("locked");
       theme.setAttribute("content", "#b9e7f6");
     }
