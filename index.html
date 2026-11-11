@@ -719,11 +719,23 @@
       );
       line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(c)) + " " + neck);
       const branches = line.querySelectorAll(".branch");
+      const rise = left.y - node.y;
+      const run = left.x - node.x;
+      let bowX = -rise;
+      let bowY = run;
+      if (bowY > 0) {
+        bowX = -bowX;
+        bowY = -bowY;
+      }
+      const bowLen = Math.hypot(bowX, bowY) || 1;
+      const bow = 20 * scale;
+      bowX = bowX / bowLen * bow;
+      bowY = bowY / bowLen * bow;
       branches[0].setAttribute("d", stem(
         node,
         left,
-        { x: node.x - 42 * scale, y: node.y - 8 * scale },
-        { x: left.x + 19 * scale, y: left.y + 18 * scale }
+        { x: node.x + run * 0.34 + bowX, y: node.y + rise * 0.34 + bowY },
+        { x: node.x + run * 0.72 + bowX * 0.65, y: node.y + rise * 0.72 + bowY * 0.65 }
       ));
       branches[1].setAttribute("d", stem(
         node,
