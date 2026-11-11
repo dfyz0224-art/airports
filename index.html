@@ -668,41 +668,30 @@
         return `M ${f(a.x)} ${f(a.y)} C ${f(c1.x)} ${f(c1.y)}, ${f(c2.x)} ${f(c2.y)}, ${f(b.x)} ${f(b.y)}`;
       };
       const scale = box.width / 390;
-      const node = { x: p[6].x, y: p[6].t - 14 * scale };
-      const neckFrom = { x: p[6].x, y: p[6].t + 6 * scale };
-      const left = { x: p[7].r - 8 * scale, y: p[7].y };
-      const right = { x: p[8].l + 8 * scale, y: p[8].y };
+      const node = { x: p[6].x, y: p[6].t - 8 * scale };
+      const neckFrom = { x: p[6].x, y: p[6].t + 7 * scale };
+      const left = { x: p[7].x - (p[7].x - p[7].l) * 0.15, y: p[7].b - 5 * scale };
+      const right = { x: p[8].x + (p[8].r - p[8].x) * 0.2, y: p[8].b - 5 * scale };
       const neck = stem(
         neckFrom,
         node,
-        { x: (neckFrom.x + node.x) / 2, y: neckFrom.y - 8 * scale },
-        { x: (neckFrom.x + node.x) / 2, y: node.y + 6 * scale }
+        { x: node.x, y: (neckFrom.y + node.y) / 2 },
+        { x: node.x, y: (neckFrom.y + node.y) / 2 }
       );
       line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(c)) + " " + neck);
       const branches = line.querySelectorAll(".branch");
-      const rise = left.y - node.y;
-      const run = left.x - node.x;
-      let bowX = -rise;
-      let bowY = run;
-      if (bowY > 0) {
-        bowX = -bowX;
-        bowY = -bowY;
-      }
-      const bowLen = Math.hypot(bowX, bowY) || 1;
-      const bow = 22 * scale;
-      bowX = bowX / bowLen * bow;
-      bowY = bowY / bowLen * bow;
+      const lane = Math.max(node.x + 14 * scale, p[7].r + 12 * scale);
       branches[0].setAttribute("d", stem(
         node,
         left,
-        { x: node.x + run * 0.34 + bowX, y: node.y + rise * 0.34 + bowY },
-        { x: node.x + run * 0.72 + bowX * 0.65, y: node.y + rise * 0.72 + bowY * 0.65 }
+        { x: node.x + (left.x - node.x) * 0.38 - 16 * scale, y: node.y + (left.y - node.y) * 0.55 },
+        { x: left.x - 10 * scale, y: left.y + 18 * scale }
       ));
       branches[1].setAttribute("d", stem(
         node,
         right,
-        { x: node.x + (right.x - node.x) * 0.4 + 12 * scale, y: node.y + (right.y - node.y) * 0.28 },
-        { x: right.x - 14 * scale, y: right.y + 16 * scale }
+        { x: lane, y: node.y + (right.y - node.y) * 0.42 },
+        { x: Math.max(right.x, lane - 6 * scale), y: right.y + 16 * scale }
       ));
       branches[2].setAttribute("d", "");
     }
