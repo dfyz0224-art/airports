@@ -643,34 +643,31 @@
           y: rect.top + rect.height / 2 - box.top
         };
       };
-      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6, 7].map(at)));
-      const edge = (n, which) => {
-        const button = document.querySelector(`.cp[data-n="${n}"]`);
-        const rect = button.getBoundingClientRect();
+      const bounds = (n) => {
+        const rect = document.querySelector(`.cp[data-n="${n}"]`).getBoundingClientRect();
         return {
-          x: (which === "right" ? rect.right : rect.left) - box.left,
-          y: rect.top + rect.height / 2 - box.top
+          l: rect.left - box.left,
+          r: rect.right - box.left,
+          t: rect.top - box.top,
+          b: rect.bottom - box.top,
+          w: rect.width,
+          h: rect.height
         };
       };
-      const p7 = at(7);
-      const p8 = at(8);
-      const p9 = at(9);
-      const from = edge(7, "right");
-      const to = edge(8, "left");
-      const mid = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 - 16 };
-      const dx = p9.x - p8.x;
-      const dy = p9.y - p8.y;
-      const len = Math.hypot(dx, dy) || 1;
-      let nx = -dy / len;
-      let ny = dx / len;
-      if (ny > 0) { nx = -nx; ny = -ny; }
-      const bow = 36;
-      const rise1 = { x: p8.x + dx * 0.22 + nx * bow * 0.35, y: p8.y + dy * 0.08 + ny * bow };
-      const rise2 = { x: p9.x - dx * 0.18 + nx * bow * 0.2, y: p9.y - dy * 0.28 + ny * bow * 0.25 };
+      const r7 = bounds(7);
+      const r8 = bounds(8);
+      const r9 = bounds(9);
+      const dock = { x: r7.l + r7.w * 0.64, y: r7.b };
+      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(at).concat(dock)));
+      const from = { x: r7.r, y: r7.t + r7.h * 0.5 };
+      const into = { x: r8.l, y: r8.t + r8.h * 0.55 };
+      const gap = Math.max(24, into.x - from.x);
+      const crest = { x: r8.l + Math.min(36, r8.w * 0.22), y: r8.t };
+      const land = { x: r9.r - Math.min(18, r9.w * 0.12), y: r9.b };
       const n = (v) => v.toFixed(1);
       line.querySelector(".branch").setAttribute(
         "d",
-        `M ${n(p7.x)} ${n(p7.y)} C ${n(p7.x + (from.x - p7.x) * 0.7)} ${n(p7.y)}, ${n(mid.x - 16)} ${n(mid.y)}, ${n(mid.x)} ${n(mid.y)} C ${n(mid.x + 16)} ${n(mid.y)}, ${n(p8.x - (p8.x - to.x) * 0.7)} ${n(p8.y)}, ${n(p8.x)} ${n(p8.y)} C ${n(rise1.x)} ${n(rise1.y)}, ${n(rise2.x)} ${n(rise2.y)}, ${n(p9.x)} ${n(p9.y)}`
+        `M ${n(from.x)} ${n(from.y)} C ${n(from.x + gap * 0.42)} ${n(from.y + 11)}, ${n(into.x - gap * 0.28)} ${n(into.y + 4)}, ${n(into.x)} ${n(into.y)} C ${n(r8.l - 12)} ${n(into.y - 10)}, ${n(crest.x - 10)} ${n(crest.y - 8)}, ${n(crest.x)} ${n(crest.y)} C ${n(crest.x + 34)} ${n(crest.y - 26)}, ${n(land.x + 14)} ${n(land.y + 32)}, ${n(land.x)} ${n(land.y)}`
       );
     }
 
