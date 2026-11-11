@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#b9e7f6">
+  <meta name="theme-color" content="#c1dffb">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Чекпоинты">
   <title>Чекпоинты</title>
@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --paper: #b9e7f6;
+      --paper: #c1dffb;
       --ink: #143d5c;
       --muted: #3d6d88;
       --line: #14608a;
@@ -27,13 +27,13 @@
       margin: 0;
       height: 100%;
       overflow: hidden;
+      background: var(--paper) url("assets/bg.png") center / cover no-repeat;
     }
 
     body {
       height: 100dvh;
       font-family: "Nunito", "Arial Rounded MT Bold", "Segoe UI", sans-serif;
       color: var(--ink);
-      background: var(--paper);
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -73,6 +73,15 @@
       height: 100%;
       overflow: visible;
       pointer-events: none;
+    }
+
+    .line path {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 8 10;
     }
 
     .cp {
@@ -365,8 +374,10 @@
   <main class="route">
     <h1 class="sr-only">Чекпоинты</h1>
     <svg class="line" aria-hidden="true" focusable="false">
-      <path class="spine" fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
-      <path class="branch" fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
+      <path class="spine"/>
+      <path class="branch"/>
+      <path class="branch"/>
+      <path class="branch"/>
     </svg>
     <button class="cp" type="button" data-n="1" data-side="left">
       <span class="mark" aria-hidden="true"><img src="assets/icon-1.png" alt=""></span>
@@ -662,16 +673,48 @@
 
     function layoutLine() {
       const box = route.getBoundingClientRect();
-      const at = (n) => {
-        const button = document.querySelector(`.cp[data-n="${n}"]`);
-        const rect = button.getBoundingClientRect();
+      const spot = (n) => {
+        const rect = document.querySelector(`.cp[data-n="${n}"]`).getBoundingClientRect();
         return {
+          l: rect.left - box.left,
+          t: rect.top - box.top,
+          r: rect.right - box.left,
+          b: rect.bottom - box.top,
           x: rect.left + rect.width / 2 - box.left,
           y: rect.top + rect.height / 2 - box.top
         };
       };
-      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6, 7, 8, 9].map(at)));
-      line.querySelector(".branch").setAttribute("d", "");
+      const p = {};
+      for (let n = 1; n <= 9; n++) p[n] = spot(n);
+      const c = (n) => ({ x: p[n].x, y: p[n].y });
+      const mark = (n) => {
+        const rect = document.querySelector(`.cp[data-n="${n}"] .mark`).getBoundingClientRect();
+        return {
+          l: rect.left - box.left,
+          t: rect.top - box.top,
+          r: rect.right - box.left,
+          b: rect.bottom - box.top
+        };
+      };
+      const icon = mark(6);
+      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(c)));
+      const toBoarding = {
+        x: (p[6].x + p[7].x) / 2 - 28,
+        y: (p[6].y + p[7].y) / 2 + 16
+      };
+      const toArrivals = {
+        x: Math.min(p[6].x - 6, icon.l - 22),
+        y: icon.t - 10
+      };
+      const gapTop = Math.min(p[7].t, p[8].t);
+      const toSupport = {
+        x: Math.min(p[8].l - 28, Math.max(p[7].r + 16, (p[7].r + p[8].l) / 2 - 10)),
+        y: (p[9].b + gapTop) / 2
+      };
+      const branches = line.querySelectorAll(".branch");
+      branches[0].setAttribute("d", curveThrough([c(6), toBoarding, c(7)]));
+      branches[1].setAttribute("d", curveThrough([c(6), toArrivals, c(8)]));
+      branches[2].setAttribute("d", curveThrough([c(6), toSupport, c(9)]));
     }
 
     function layoutVideo() {
@@ -702,7 +745,7 @@
       stage.hidden = false;
       replay.hidden = true;
       videoError.hidden = true;
-      theme.setAttribute("content", "#b9e7f6");
+      theme.setAttribute("content", "#c1dffb");
       const src = videos[n];
       if (src) {
         stage.classList.remove("is-stub");
@@ -725,7 +768,7 @@
         points.hidden = true;
         stage.classList.remove("is-video");
         stage.classList.add("is-stub");
-        theme.setAttribute("content", "#b9e7f6");
+        theme.setAttribute("content", "#c1dffb");
         video.hidden = true;
         spinner.hidden = true;
         stub.hidden = false;
@@ -742,7 +785,7 @@
       stage.classList.remove("is-stub");
       stage.classList.remove("is-video");
       document.body.classList.remove("locked");
-      theme.setAttribute("content", "#b9e7f6");
+      theme.setAttribute("content", "#c1dffb");
     }
 
     function openCheckpoint(n) {
