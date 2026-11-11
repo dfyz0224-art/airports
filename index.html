@@ -156,7 +156,7 @@
     }
 
     #stage.is-video {
-      background: #a3d0e0;
+      background: var(--paper) url("assets/bg.png") center / cover no-repeat;
     }
 
     #stage.is-stub::before {
@@ -729,7 +729,6 @@
       if (src) {
         stage.classList.remove("is-stub");
         stage.classList.add("is-video");
-        theme.setAttribute("content", "#a3d0e0");
         const parking = n === 1;
         brand.hidden = !parking;
         points.hidden = !parking;
