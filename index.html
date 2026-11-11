@@ -696,25 +696,47 @@
           b: rect.bottom - box.top
         };
       };
+      const stem = (a, b, c1, c2) => {
+        const f = (n) => n.toFixed(1);
+        return `M ${f(a.x)} ${f(a.y)} C ${f(c1.x)} ${f(c1.y)}, ${f(c2.x)} ${f(c2.y)}, ${f(b.x)} ${f(b.y)}`;
+      };
       const icon = mark(6);
-      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(c)));
-      const toBoarding = {
-        x: (p[6].x + p[7].x) / 2 - 28,
-        y: (p[6].y + p[7].y) / 2 + 16
+      const scale = box.width / 390;
+      const iconReady = icon.r - icon.l > 2;
+      const node = {
+        x: (iconReady ? icon.l : p[6].x) - 30 * scale,
+        y: p[6].t - 18 * scale
       };
-      const toArrivals = {
-        x: Math.min(p[6].x - 6, icon.l - 22),
-        y: icon.t - 10
-      };
-      const gapTop = Math.min(p[7].t, p[8].t);
-      const toSupport = {
-        x: Math.min(p[8].l - 28, Math.max(p[7].r + 16, (p[7].r + p[8].l) / 2 - 10)),
-        y: (p[9].b + gapTop) / 2
-      };
+      const left = { x: p[7].r - 10 * scale, y: p[7].y };
+      const right = { x: p[8].l + (p[8].r - p[8].l) * 0.38, y: p[8].b - 8 * scale };
+      const up = { x: p[9].x, y: p[9].b - 8 * scale };
+      const neckFrom = { x: p[6].x, y: p[6].t + 8 * scale };
+      const neck = stem(
+        neckFrom,
+        node,
+        { x: (neckFrom.x + node.x) / 2, y: neckFrom.y - 10 * scale },
+        { x: (neckFrom.x + node.x) / 2, y: node.y + 8 * scale }
+      );
+      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(c)) + " " + neck);
       const branches = line.querySelectorAll(".branch");
-      branches[0].setAttribute("d", curveThrough([c(6), toBoarding, c(7)]));
-      branches[1].setAttribute("d", curveThrough([c(6), toArrivals, c(8)]));
-      branches[2].setAttribute("d", curveThrough([c(6), toSupport, c(9)]));
+      branches[0].setAttribute("d", stem(
+        node,
+        left,
+        { x: node.x - 42 * scale, y: node.y - 8 * scale },
+        { x: left.x + 19 * scale, y: left.y + 18 * scale }
+      ));
+      branches[1].setAttribute("d", stem(
+        node,
+        right,
+        { x: node.x - 10 * scale, y: node.y - 32 * scale },
+        { x: right.x - 22 * scale, y: right.y + 9 * scale }
+      ));
+      branches[2].setAttribute("d", stem(
+        node,
+        up,
+        { x: node.x - 27 * scale, y: node.y - 66 * scale },
+        { x: up.x + 33 * scale, y: up.y + 31 * scale }
+      ));
     }
 
     function layoutVideo() {
