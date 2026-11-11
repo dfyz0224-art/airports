@@ -637,7 +637,7 @@
           y: rect.top + rect.height / 2 - box.top
         };
       };
-      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6, 7, 9].map(at)));
+      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6, 7].map(at)));
       const edge = (n, which) => {
         const button = document.querySelector(`.cp[data-n="${n}"]`);
         const rect = button.getBoundingClientRect();
@@ -648,10 +648,8 @@
       };
       const from = edge(7, "right");
       const to = edge(8, "left");
-      line.querySelector(".branch").setAttribute(
-        "d",
-        `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} L ${to.x.toFixed(1)} ${to.y.toFixed(1)}`
-      );
+      const link = `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} L ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
+      line.querySelector(".branch").setAttribute("d", `${link} ${curveThrough([at(8), at(9)])}`);
     }
 
     function layoutVideo() {
