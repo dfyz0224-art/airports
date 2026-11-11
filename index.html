@@ -660,15 +660,14 @@
       const dock = { x: r7.l + r7.w * 0.64, y: r7.b };
       line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(at).concat(dock)));
       const from = { x: r7.r, y: r7.t + r7.h * 0.5 };
-      const into = { x: r8.l, y: r8.t + r8.h * 0.55 };
+      const into = { x: r8.l, y: r8.t + r8.h * 0.52 };
       const gap = Math.max(24, into.x - from.x);
-      const crest = { x: r8.l + Math.min(36, r8.w * 0.22), y: r8.t };
-      const land = { x: r9.r - Math.min(18, r9.w * 0.12), y: r9.b };
+      const crest = { x: r8.l + Math.min(34, r8.w * 0.2), y: r8.t };
+      const land = { x: r9.r - Math.min(16, r9.w * 0.1), y: r9.b };
       const n = (v) => v.toFixed(1);
-      line.querySelector(".branch").setAttribute(
-        "d",
-        `M ${n(from.x)} ${n(from.y)} C ${n(from.x + gap * 0.42)} ${n(from.y + 11)}, ${n(into.x - gap * 0.28)} ${n(into.y + 4)}, ${n(into.x)} ${n(into.y)} C ${n(r8.l - 12)} ${n(into.y - 10)}, ${n(crest.x - 10)} ${n(crest.y - 8)}, ${n(crest.x)} ${n(crest.y)} C ${n(crest.x + 34)} ${n(crest.y - 26)}, ${n(land.x + 14)} ${n(land.y + 32)}, ${n(land.x)} ${n(land.y)}`
-      );
+      const wave = `M ${n(from.x)} ${n(from.y)} C ${n(from.x + gap * 0.4)} ${n(from.y + 9)}, ${n(into.x - gap * 0.32)} ${n(into.y + 5)}, ${n(into.x)} ${n(into.y)}`;
+      const rise = `M ${n(crest.x)} ${n(crest.y)} C ${n(crest.x + 22)} ${n(crest.y - 18)}, ${n(land.x + 18)} ${n(land.y + 26)}, ${n(land.x)} ${n(land.y)}`;
+      line.querySelector(".branch").setAttribute("d", `${wave} ${rise}`);
     }
 
     function layoutVideo() {
