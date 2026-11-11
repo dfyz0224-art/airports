@@ -58,7 +58,7 @@
       margin: 0 auto;
       overflow: hidden;
       padding:
-        calc(4px + env(safe-area-inset-top))
+        calc(12px + env(safe-area-inset-top))
         calc(6px + env(safe-area-inset-right))
         calc(8px + env(safe-area-inset-bottom))
         calc(6px + env(safe-area-inset-left));
@@ -579,7 +579,8 @@
         if (index < gapWeights.length) y += free * gapWeights[index] / weightSum;
       });
       const boarding = rows.find((button) => button.dataset.n === "7");
-      const edgeRoom = (button) => Math.max(0, half - button.offsetWidth / 2 - 4);
+      const edgeInset = 18;
+      const edgeRoom = (button) => Math.max(0, half - button.offsetWidth / 2 - edgeInset);
       const setX = (button, x) => {
         button.dataset.x = String(x);
         button.style.translate = `calc(-50% + ${x}px) 0`;
@@ -592,10 +593,16 @@
         const markEl = button.querySelector(".mark");
         const box = route.getBoundingClientRect();
         const rect = markEl.getBoundingClientRect();
-        if (rect.width < 2) return;
+        const outer = ["7", "8", "9"].includes(button.dataset.n);
+        const keep = outer ? 18 : 2;
+        const pill = button.getBoundingClientRect();
+        const markReady = rect.width > 2;
+        if (!markReady && !outer) return;
+        const left = outer && markReady ? Math.min(pill.left, rect.left) : (markReady ? rect.left : pill.left);
+        const right = outer && markReady ? Math.max(pill.right, rect.right) : (markReady ? rect.right : pill.right);
         let dx = 0;
-        if (rect.left < box.left + 2) dx = box.left + 2 - rect.left;
-        else if (rect.right > box.right - 2) dx = box.right - 2 - rect.right;
+        if (left < box.left + keep) dx = box.left + keep - left;
+        else if (right > box.right - keep) dx = box.right - keep - right;
         if (!dx) return;
         const limit = edgeRoom(button);
         const next = Math.max(-limit, Math.min(limit, Number(button.dataset.x) + dx));
@@ -610,8 +617,7 @@
       layoutLine();
     }
 
-    function curveThrough(points) {
-      const tension = 0.24;
+    function curveThrough(points, tension = 0.24) {
       let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
       for (let i = 0; i < points.length - 1; i++) {
         const p0 = points[i - 1] || points[i];
@@ -646,10 +652,26 @@
           y: rect.top + rect.height / 2 - box.top
         };
       };
+      const p7 = at(7);
+      const p8 = at(8);
+      const p9 = at(9);
       const from = edge(7, "right");
       const to = edge(8, "left");
-      const link = `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} L ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
-      line.querySelector(".branch").setAttribute("d", `${link} ${curveThrough([at(8), at(9)])}`);
+      const mid = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 - 16 };
+      const dx = p9.x - p8.x;
+      const dy = p9.y - p8.y;
+      const len = Math.hypot(dx, dy) || 1;
+      let nx = -dy / len;
+      let ny = dx / len;
+      if (ny > 0) { nx = -nx; ny = -ny; }
+      const bow = 36;
+      const rise1 = { x: p8.x + dx * 0.22 + nx * bow * 0.35, y: p8.y + dy * 0.08 + ny * bow };
+      const rise2 = { x: p9.x - dx * 0.18 + nx * bow * 0.2, y: p9.y - dy * 0.28 + ny * bow * 0.25 };
+      const n = (v) => v.toFixed(1);
+      line.querySelector(".branch").setAttribute(
+        "d",
+        `M ${n(p7.x)} ${n(p7.y)} C ${n(p7.x + (from.x - p7.x) * 0.7)} ${n(p7.y)}, ${n(mid.x - 16)} ${n(mid.y)}, ${n(mid.x)} ${n(mid.y)} C ${n(mid.x + 16)} ${n(mid.y)}, ${n(p8.x - (p8.x - to.x) * 0.7)} ${n(p8.y)}, ${n(p8.x)} ${n(p8.y)} C ${n(rise1.x)} ${n(rise1.y)}, ${n(rise2.x)} ${n(rise2.y)}, ${n(p9.x)} ${n(p9.y)}`
+      );
     }
 
     function layoutVideo() {
