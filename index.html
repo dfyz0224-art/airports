@@ -58,10 +58,10 @@
       margin: 0 auto;
       overflow: hidden;
       padding:
-        calc(8px + env(safe-area-inset-top))
-        calc(12px + env(safe-area-inset-right))
+        calc(4px + env(safe-area-inset-top))
+        calc(6px + env(safe-area-inset-right))
         calc(8px + env(safe-area-inset-bottom))
-        calc(12px + env(safe-area-inset-left));
+        calc(6px + env(safe-area-inset-left));
       user-select: none;
     }
 
@@ -99,26 +99,20 @@
 
     .mark {
       position: absolute;
-      bottom: calc(100% + 2px);
-      width: var(--mark, 36px);
-      height: var(--mark, 36px);
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: #fff;
-      color: var(--ink);
-      box-shadow: 0 5px 12px rgba(16, 70, 100, 0.18);
+      bottom: calc(100% + 1px);
+      height: var(--mark, 58px);
+      width: max-content;
       pointer-events: none;
     }
 
-    .cp[data-side="left"] .mark { left: 0; }
-    .cp[data-side="right"] .mark { right: 0; }
+    .cp[data-side="left"] .mark { left: 16%; translate: -32% 0; }
+    .cp[data-side="right"] .mark { right: 16%; translate: 32% 0; }
 
-    .mark svg {
+    .mark img {
       display: block;
-      width: calc(var(--mark, 36px) - 6px);
-      height: calc(var(--mark, 36px) - 6px);
-      overflow: visible;
+      height: 100%;
+      width: auto;
+      filter: drop-shadow(0 3px 6px rgba(16, 70, 100, 0.16));
     }
 
     .cp:focus-visible {
@@ -371,42 +365,43 @@
   <main class="route">
     <h1 class="sr-only">Чекпоинты</h1>
     <svg class="line" aria-hidden="true" focusable="false">
-      <path fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
+      <path class="spine" fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
+      <path class="branch" fill="none" stroke="#14608a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 10"/>
     </svg>
     <button class="cp" type="button" data-n="1" data-side="left">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="3.5" y="3.5" width="25" height="25" rx="4" fill="#14608a"/><path d="M12.2 23.6V8.6h6.2a4.7 4.7 0 0 1 0 9.4h-6.2" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="name">Парковка для семей с детьми</span>
+      <span class="mark" aria-hidden="true"><img src="assets/icon-1.png" alt=""></span>
+      <span class="name">На привокзальной площади</span>
     </button>
     <button class="cp" type="button" data-n="2" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="6.4" width="18.2" height="19.2" rx="2.4"/><circle cx="9.4" cy="12.6" r="2.3" fill="currentColor" stroke="none"/><path d="M6.2 20.6c.3-2.2 1.4-3.4 3.2-3.4s2.9 1.2 3.2 3.4"/><path d="M14.6 12h5M14.6 16h5"/><circle cx="23.6" cy="22.6" r="5.3" fill="currentColor" stroke="none"/><path d="M20.8 22.6l1.9 2 3.7-4.2" stroke="#fff" stroke-width="1.9"/></svg></span>
+      <span class="mark" aria-hidden="true"><img src="assets/icon-2.png" alt=""></span>
       <span class="name">Входной досмотр</span>
     </button>
     <button class="cp" type="button" data-n="3" data-side="left">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="16" height="12" rx="2"/><path d="M11.5 11h9M11.5 14.5h5.5"/><path d="M6 23h20M9 23v3M23 23v3"/></svg></span>
-      <span class="name">Регистрация</span>
+      <span class="mark" aria-hidden="true"><img src="assets/icon-3.png" alt=""></span>
+      <span class="name">Регистрация на рейс</span>
     </button>
     <button class="cp" type="button" data-n="4" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(0 -4.1)"><circle cx="10.6" cy="15.4" r="2.6" fill="currentColor" stroke="none"/><path d="M5 27.4c.5-5.2 2.3-7.6 5.6-7.6s5.1 2.4 5.6 7.6"/><circle cx="23.2" cy="18.6" r="2.1" fill="currentColor" stroke="none"/><path d="M19.2 27.4c.35-3.8 1.6-5.6 4-5.6s3.65 1.8 4 5.6"/></g></svg></span>
+      <span class="mark" aria-hidden="true"><img src="assets/icon-4.png" alt=""></span>
       <span class="name">Комната матери и ребенка</span>
     </button>
     <button class="cp" type="button" data-n="5" data-side="left">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13h18l-2 11H9L7 13z"/><path d="M5.5 13h21"/><path d="M12 13V8.5h8V13"/></svg></span>
+      <span class="mark" aria-hidden="true"><img src="assets/icon-5.png" alt=""></span>
       <span class="name">Предполетный досмотр</span>
     </button>
     <button class="cp" type="button" data-n="6" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 11V7.5h5"/><path d="M11 11h11l2 8H10.5L11 11z"/><circle cx="13" cy="23.5" r="2.1"/><circle cx="21.5" cy="23.5" r="2.1"/></svg></span>
-      <span class="name">Сервисы для пассажиров с детьми</span>
+      <span class="mark" aria-hidden="true"><img src="assets/icon-6.png" alt=""></span>
+      <span class="name">В ожидании вылета</span>
     </button>
     <button class="cp" type="button" data-n="7" data-side="left">
-      <span class="mark" aria-hidden="true"><svg viewBox="2 0 92 68" fill="none" stroke="currentColor" stroke-width="6.6" stroke-linecap="round" stroke-linejoin="round">  <path d="M5 65.5h86"/>  <rect x="8" y="44" width="54" height="12" rx="3.5"/>  <path d="M58 46V33c0-6 4.5-9 11-9h8c7 0 11 4 11 10v10c0 5-3 6.5-7 6.5H58"/>  <path d="M66 28v13"/>  <rect x="72" y="29.5" width="12" height="8" rx="2"/>  <path d="M78 42.5h5"/>  <path d="M84 44h6v6.5c0 2-1.4 3-3 3h-3"/>  <circle cx="22" cy="56" r="7.2"/>  <circle cx="22" cy="56" r="2.1" fill="currentColor" stroke="none"/>  <circle cx="44" cy="56" r="7.2"/>  <circle cx="44" cy="56" r="2.1" fill="currentColor" stroke="none"/>  <circle cx="72" cy="56" r="7.2"/>  <circle cx="72" cy="56" r="2.1" fill="currentColor" stroke="none"/>  <path d="M82 10H50L13 36Q10 45 18 43L55 17H82V10"/>  <path d="M21.1 30.3L26 37.2"/>  <path d="M28.5 25.1L33.4 32"/>  <path d="M35.9 19.9L40.8 26.8"/>  <path d="M43.3 14.7L48.2 21.6"/>  <path d="M58 4.2h26"/>  <path d="M70 4.2V10"/></svg></span>
-      <span class="name">Приоритетная посадка в самолет</span>
+      <span class="mark" aria-hidden="true"><img src="assets/icon-7.png" alt=""></span>
+      <span class="name">Приоритетная посадка</span>
     </button>
     <button class="cp" type="button" data-n="8" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><g transform="translate(16 16) rotate(24) scale(0.91) translate(-16 -16)"><path fill="currentColor" stroke="currentColor" stroke-width="1.15" stroke-linejoin="round" fill-rule="evenodd" d="M10.17 8.08L11.67 8.42L18.00 12.25L13.83 13.25L9.50 8.42L10.17 8.08Z M25.67 11.25L27.67 11.42L27.83 11.58L26.33 12.08L27.00 12.58L29.67 11.92L30.50 12.25L31.00 12.92L30.50 13.58L29.17 14.25L20.33 16.58L20.83 15.42L20.17 14.75L16.17 15.75L14.67 16.25L13.33 18.25L8.83 19.25L4.83 19.08L6.67 18.58L7.17 18.08L7.17 17.25L6.67 16.75L3.67 17.25L1.00 13.08L1.00 12.75L2.67 12.42L6.83 15.25L7.50 15.58L8.67 15.58L25.67 11.25Z M19.50 15.75L19.83 15.75L13.00 23.42L11.17 23.92L15.00 17.08L19.50 15.75Z M5.83 17.58L6.33 17.75L1.00 19.08L5.83 17.58Z"/></g></svg></span>
-      <span class="name">Зона прилета</span>
+      <span class="mark" aria-hidden="true"><img src="assets/icon-8.png" alt=""></span>
+      <span class="name">Для прилетевших пассажиров</span>
     </button>
-    <button class="cp" type="button" data-n="9" data-side="right">
-      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="8.2" r="2.5" fill="currentColor" stroke="none"/><path d="M9.2 26.6v-5a6.8 6.8 0 0 1 13.6 0v5"/><path fill="currentColor" stroke="none" d="M16 20.6s-5.4-3.3-5.4-6.6c0-2 1.5-3.4 3.1-3.4 1 0 1.8.5 2.3 1.3.5-.8 1.3-1.3 2.3-1.3 1.6 0 3.1 1.4 3.1 3.4 0 3.3-5.4 6.6-5.4 6.6z"/></svg></span>
+    <button class="cp" type="button" data-n="9" data-side="left">
+      <span class="mark" aria-hidden="true"><img src="assets/icon-9.png" alt=""></span>
       <span class="name">Комплексная поддержка пассажиров с детьми</span>
     </button>
   </main>
@@ -468,8 +463,8 @@
     ruler.style.cssText = "position:absolute;left:-9999px;top:0;white-space:nowrap;visibility:hidden;pointer-events:none;";
     document.body.appendChild(ruler);
 
-    const shifts = { 1: -24, 2: 62, 3: -76, 4: 30, 5: -48, 6: 38, 7: -16, 8: 70, 9: 44 };
-    const gapWeights = [1.4, 0.58, 1.62, 0.74, 1.3, 0.52, 1.48, 0.96];
+    const shifts = { 1: -26, 2: 58, 3: -68, 4: 34, 5: -48, 6: 36, 7: -24, 9: -78 };
+    const gapWeights = [0.72, 1.2, 0.58, 1.38, 0.66, 1.22, 0.84];
 
     document.querySelectorAll(".cp").forEach((button) => {
       const n = button.dataset.n;
@@ -489,7 +484,10 @@
       const words = labels.get(button).split(/\s+/);
       const style = getComputedStyle(button);
       const pad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-      const limit = Math.min(route.clientWidth - 88, 260);
+      const n = button.dataset.n;
+      const limit = n === "7" || n === "8"
+        ? Math.max(132, route.clientWidth * 0.4)
+        : Math.min(route.clientWidth - 72, 248);
       const lineOf = (list) => measure(list.join(" "), button);
       button.style.maxWidth = "none";
       const name = button.querySelector(".name");
@@ -524,58 +522,96 @@
     }
 
     function layoutStops() {
-      document.querySelectorAll(".cp").forEach(fitLabel);
       const padTop = parseFloat(getComputedStyle(route).paddingTop);
       const padBottom = parseFloat(getComputedStyle(route).paddingBottom);
-      const ids = [9, 8, 7, 6, 5, 4, 3, 2, 1];
-      const buttons = ids.map((id) => document.querySelector(`.cp[data-n="${id}"]`));
-      const available = route.clientHeight - padTop - padBottom;
-      let heights = [];
+      const rowIds = [9, 7, 6, 5, 4, 3, 2, 1];
+      const rows = rowIds.map((id) => document.querySelector(`.cp[data-n="${id}"]`));
+      const side = document.querySelector('.cp[data-n="8"]');
+      let bottomGap = Math.round(Math.min(76, Math.max(44, route.clientHeight * 0.085)));
       let fit = 1;
-      let mark = 36;
+      let mark = 64;
+      let heights = [];
       let slot = mark + 2;
       let stack = Infinity;
-      for (let attempt = 0; attempt < 14; attempt++) {
+      for (let attempt = 0; attempt < 20; attempt++) {
         route.style.setProperty("--fit", String(fit));
         route.style.setProperty("--mark", mark + "px");
-        buttons.forEach(fitLabel);
-        heights = buttons.map((button) => button.offsetHeight);
+        document.querySelectorAll(".cp").forEach(fitLabel);
+        heights = rows.map((button) => (
+          button.dataset.n === "7" ? Math.max(button.offsetHeight, side.offsetHeight) : button.offsetHeight
+        ));
         slot = mark + 2;
-        stack = heights.reduce((sum, height) => sum + height, 0) + slot * buttons.length;
-        if (stack + 4 * (buttons.length - 1) <= available) break;
-        if (mark > 30) mark -= 2;
-        else if (fit > 0.84) fit = Math.round((fit - 0.04) * 100) / 100;
-        else if (mark > 26) mark -= 2;
+        stack = heights.reduce((sum, height) => sum + height, 0) + slot * rows.length;
+        const available = route.clientHeight - padTop - padBottom - bottomGap;
+        if (stack + 2 * (rows.length - 1) <= available) break;
+        if (mark > 52) mark -= 2;
+        else if (fit > 0.86) fit = Math.round((fit - 0.03) * 100) / 100;
+        else if (bottomGap > 28) bottomGap -= 6;
+        else if (mark > 44) mark -= 2;
         else break;
       }
+      const available = route.clientHeight - padTop - padBottom - bottomGap;
       const free = Math.max(0, available - stack);
       const weightSum = gapWeights.reduce((sum, weight) => sum + weight, 0);
       const half = route.clientWidth / 2;
+      const spanOf = (button) => {
+        const img = button.querySelector("img");
+        const ratio = img && img.naturalWidth ? img.naturalWidth / img.naturalHeight : 1.25;
+        const hang = mark * ratio * 0.46;
+        return button.offsetWidth + hang * 0.35;
+      };
+      const placeX = (button, preferred) => {
+        const room = Math.max(0, half - spanOf(button) / 2 - 2);
+        return Math.max(-room, Math.min(room, preferred));
+      };
+      const placed = new Map();
       let y = padTop;
-      buttons.forEach((button, index) => {
-        const room = Math.max(0, half - button.offsetWidth / 2 - 10);
-        const x = Math.max(-room, Math.min(room, shifts[ids[index]]));
-        button.style.top = (y + slot) + "px";
+      rows.forEach((button, index) => {
+        const id = Number(button.dataset.n);
+        const x = placeX(button, id === 7 ? Math.min(shifts[7], -36) : shifts[id]);
+        const top = y + slot;
+        button.dataset.x = String(x);
+        button.style.top = top + "px";
         button.style.translate = `calc(-50% + ${x}px) 0`;
         button.dataset.side = x < 0 ? "left" : "right";
+        placed.set(id, { top, x });
         y += slot + heights[index];
         if (index < gapWeights.length) y += free * gapWeights[index] / weightSum;
       });
+      const boarding = rows.find((button) => button.dataset.n === "7");
+      const edgeRoom = (button) => Math.max(0, half - button.offsetWidth / 2 - 4);
+      const setX = (button, x) => {
+        button.dataset.x = String(x);
+        button.style.translate = `calc(-50% + ${x}px) 0`;
+        button.dataset.side = x < 0 ? "left" : "right";
+      };
+      setX(boarding, -edgeRoom(boarding));
+      setX(side, edgeRoom(side));
+      side.style.top = placed.get(7).top + "px";
+      document.querySelectorAll(".cp").forEach((button) => {
+        const markEl = button.querySelector(".mark");
+        const box = route.getBoundingClientRect();
+        const rect = markEl.getBoundingClientRect();
+        if (rect.width < 2) return;
+        let dx = 0;
+        if (rect.left < box.left + 2) dx = box.left + 2 - rect.left;
+        else if (rect.right > box.right - 2) dx = box.right - 2 - rect.right;
+        if (!dx) return;
+        const limit = edgeRoom(button);
+        const next = Math.max(-limit, Math.min(limit, Number(button.dataset.x) + dx));
+        setX(button, next);
+      });
+      const right7 = half + Number(boarding.dataset.x) + boarding.offsetWidth / 2;
+      const left8 = half + Number(side.dataset.x) - side.offsetWidth / 2;
+      const crush = right7 + 14 - left8;
+      if (crush > 0) {
+        setX(boarding, Math.max(-edgeRoom(boarding), Number(boarding.dataset.x) - crush));
+      }
       layoutLine();
     }
 
-    function layoutLine() {
-      const box = route.getBoundingClientRect();
-      const points = [...document.querySelectorAll(".cp")]
-        .sort((a, b) => Number(a.dataset.n) - Number(b.dataset.n))
-        .map((button) => {
-          const rect = button.getBoundingClientRect();
-          return {
-            x: rect.left + rect.width / 2 - box.left,
-            y: rect.top + rect.height / 2 - box.top
-          };
-        });
-      const tension = 0.28;
+    function curveThrough(points) {
+      const tension = 0.24;
       let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
       for (let i = 0; i < points.length - 1; i++) {
         const p0 = points[i - 1] || points[i];
@@ -588,7 +624,34 @@
         const c2y = p2.y - (p3.y - p1.y) * tension;
         d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
       }
-      line.querySelector("path").setAttribute("d", d);
+      return d;
+    }
+
+    function layoutLine() {
+      const box = route.getBoundingClientRect();
+      const at = (n) => {
+        const button = document.querySelector(`.cp[data-n="${n}"]`);
+        const rect = button.getBoundingClientRect();
+        return {
+          x: rect.left + rect.width / 2 - box.left,
+          y: rect.top + rect.height / 2 - box.top
+        };
+      };
+      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6, 7, 9].map(at)));
+      const edge = (n, which) => {
+        const button = document.querySelector(`.cp[data-n="${n}"]`);
+        const rect = button.getBoundingClientRect();
+        return {
+          x: (which === "right" ? rect.right : rect.left) - box.left,
+          y: rect.top + rect.height / 2 - box.top
+        };
+      };
+      const from = edge(7, "right");
+      const to = edge(8, "left");
+      line.querySelector(".branch").setAttribute(
+        "d",
+        `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} L ${to.x.toFixed(1)} ${to.y.toFixed(1)}`
+      );
     }
 
     function layoutVideo() {
@@ -711,6 +774,9 @@
       if (event.key === "Escape" && open) requestClose();
     });
 
+    document.querySelectorAll(".mark img").forEach((img) => {
+      if (!img.complete) img.addEventListener("load", layoutStops);
+    });
     layoutStops();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutStops);
   </script>
