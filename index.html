@@ -111,16 +111,10 @@
       stroke-dasharray: 4 8;
     }
 
-    .line .whisper {
-      stroke: #5aafd6;
-      stroke-width: 2.4;
-      stroke-dasharray: 3 8;
-    }
-
     .hop {
       position: absolute;
       z-index: 2;
-      width: 30px;
+      width: 44px;
       height: auto;
       pointer-events: none;
       filter: drop-shadow(0 1px 1px rgba(16, 70, 100, 0.16));
@@ -427,20 +421,17 @@
   <main class="route">
     <h1 class="sr-only">Чекпоинты</h1>
     <svg class="line" aria-hidden="true" focusable="false">
-      <path class="whisper"/>
-      <path class="whisper"/>
-      <path class="whisper"/>
       <path class="spine"/>
       <path class="hint"/>
     </svg>
-    <img class="hop" src="assets/plane.png" alt="" aria-hidden="true">
+    <img class="hop" src="assets/plane.png?v=2" alt="" aria-hidden="true">
     <button class="cp" type="button" data-n="1" data-side="left">
       <span class="mark" aria-hidden="true"><img src="assets/icon-1.png?v=5" alt=""></span>
       <span class="name">На привокзальной площади</span>
     </button>
     <button class="cp" type="button" data-n="2" data-side="right">
       <span class="mark" aria-hidden="true"><img src="assets/icon-2.png?v=5" alt=""></span>
-      <span class="name">Входной досмотр</span>
+      <span class="name">Входной и предполетный досмотр</span>
     </button>
     <button class="cp" type="button" data-n="3" data-side="left">
       <span class="mark" aria-hidden="true"><img src="assets/icon-3.png?v=5" alt=""></span>
@@ -450,11 +441,7 @@
       <span class="mark" aria-hidden="true"><img src="assets/icon-4.png?v=5" alt=""></span>
       <span class="name">Комната матери и ребенка</span>
     </button>
-    <button class="cp" type="button" data-n="5" data-side="left">
-      <span class="mark" aria-hidden="true"><img src="assets/icon-5.png?v=5" alt=""></span>
-      <span class="name">Предполетный досмотр</span>
-    </button>
-    <button class="cp" type="button" data-n="6" data-side="right">
+    <button class="cp" type="button" data-n="6" data-side="left">
       <span class="mark" aria-hidden="true"><img src="assets/icon-6.png?v=5" alt=""></span>
       <span class="name">В ожидании вылета</span>
     </button>
@@ -496,7 +483,7 @@
       <svg class="stub-plane" viewBox="-32 -34 64 68" aria-hidden="true">
         <path d="M0-30c2 0 3.4 4 3.4 12l.2 8 13-4c8-2 14 2 14 8l-1 4-25 3v8l8 5v3l-10-3-10 3v-3l8-5v-8l-25-3-1-4c0-6 6-10 14-8l13 4 .2-8c0-8 1.4-12 3.4-12z"/>
       </svg>
-      <p class="eyebrow" id="stub-name">Входной досмотр</p>
+      <p class="eyebrow" id="stub-name">Входной и предполетный досмотр</p>
       <h2>Видео ещё в пути</h2>
       <p class="note">Ролик для этой точки появится позже.</p>
       <button id="back" type="button">На карту</button>
@@ -530,7 +517,7 @@
     ruler.style.cssText = "position:absolute;left:-9999px;top:0;white-space:nowrap;visibility:hidden;pointer-events:none;";
     document.body.appendChild(ruler);
 
-    const shifts = { 1: -62, 2: 70, 3: -74, 4: 66, 5: -70, 6: 58, 7: -68 };
+    const shifts = { 1: -62, 2: 70, 3: -74, 4: 66, 6: -58, 7: -68 };
     const gapWeights = [0.62, 1.02, 1.16, 0.56, 1.05, 0.78];
 
     document.querySelectorAll(".cp").forEach((button) => {
@@ -556,7 +543,9 @@
         ? Math.min(route.clientWidth - 28, 280)
         : n === "8"
           ? Math.min(route.clientWidth * 0.4, 148)
-          : Math.min(route.clientWidth * 0.36, 132);
+          : n === "2"
+            ? Math.min(route.clientWidth * 0.48, 168)
+            : Math.min(route.clientWidth * 0.36, 132);
       const lineOf = (list) => measure(list.join(" "), button);
       button.style.maxWidth = "none";
       const name = button.querySelector(".name");
@@ -593,11 +582,11 @@
     function layoutStops() {
       const padTop = parseFloat(getComputedStyle(route).paddingTop);
       const padBottom = parseFloat(getComputedStyle(route).paddingBottom);
-      const rowIds = [7, 8, 6, 5, 4, 3, 2, 1];
+      const rowIds = [7, 8, 6, 4, 3, 2, 1];
       const rows = rowIds.map((id) => document.querySelector(`.cp[data-n="${id}"]`));
       const crown = document.querySelector('.cp[data-n="9"]');
       const arrivals = document.querySelector('.cp[data-n="8"]');
-      let bottomGap = Math.round(Math.max(78, route.clientHeight * 0.12));
+      let bottomGap = Math.round(Math.max(156, route.clientHeight * 0.22));
       let fit = 1;
       let mark = 92;
       const crownScale = 1.36;
@@ -650,7 +639,7 @@
         else if (mark > 64) mark -= 4;
         else if (fit > 0.68) fit = Math.round((fit - 0.02) * 100) / 100;
         else if (mark > 48) mark -= 4;
-        else if (bottomGap > 40) bottomGap -= 4;
+        else if (bottomGap > 88) bottomGap -= 4;
         else break;
       }
       const crownMark = Math.round(mark * crownScale);
@@ -685,7 +674,7 @@
       const heights = rows.map((button) => button.offsetHeight);
       const minGap = 8;
       const spread = Math.round(Math.min(14, Math.max(8, mark * 0.18)));
-      const tightGaps = 5;
+      const tightGaps = 4;
       const arrivalLift = Math.max(14, mark + 10 - spread * tightGaps);
       const afterArrivals = Math.round(mark * 0.46);
       const firstLift = Math.max(0, mark / 2 - heights[0] / 2);
@@ -746,7 +735,9 @@
         };
       };
       const p = {};
-      for (let n = 1; n <= 9; n++) p[n] = spot(n);
+      for (let n = 1; n <= 9; n++) {
+        if (document.querySelector(`.cp[data-n="${n}"]`)) p[n] = spot(n);
+      }
       const c = (n) => ({ x: p[n].x, y: p[n].y });
       const stem = (a, b, c1, c2) => {
         const f = (n) => n.toFixed(1);
@@ -755,7 +746,7 @@
       const scale = box.width / 390;
       const end = { x: p[7].x, y: p[7].b - 4 * scale };
       const rise = end.y - p[6].y;
-      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(c))
+      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 6].map(c))
         + ` C ${(p[6].x - 26 * scale).toFixed(1)} ${(p[6].y + rise * 0.34).toFixed(1)}, ${(end.x - 16 * scale).toFixed(1)} ${(end.y + 20 * scale).toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}`);
       const fromBoard = { x: p[7].r - 6 * scale, y: p[7].y + 4 * scale };
       const icon = document.querySelector('.cp[data-n="8"] .mark').getBoundingClientRect();
@@ -769,17 +760,6 @@
         { x: fromBoard.x + (toArrivals.x - fromBoard.x) * 0.45, y: fromBoard.y + 12 * scale },
         { x: toArrivals.x - 6 * scale, y: toArrivals.y - 16 * scale }
       ));
-      const fromCrown = { x: p[9].x, y: p[9].b + 3 * scale };
-      const whispers = line.querySelectorAll(".whisper");
-      [[8, 24], [6, 0], [4, -26]].forEach(([n, bend], index) => {
-        const to = { x: p[n].x, y: p[n].t - 6 * scale };
-        whispers[index].setAttribute("d", stem(
-          fromCrown,
-          to,
-          { x: fromCrown.x + bend * scale, y: fromCrown.y + (to.y - fromCrown.y) * 0.4 },
-          { x: to.x + bend * 0.25 * scale, y: to.y - (to.y - fromCrown.y) * 0.18 }
-        ));
-      });
       const hop = document.querySelector(".hop");
       const iconLeft = icon.left - box.left;
       const hx = (p[7].r + iconLeft) / 2;
