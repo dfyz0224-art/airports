@@ -27,14 +27,33 @@
       margin: 0;
       height: 100%;
       overflow: hidden;
-      background: var(--paper) url("assets/bg.png") center / cover no-repeat;
+      background: #9ecfed url("assets/bg.png") center / cover no-repeat;
     }
 
     body {
       height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
       font-family: "Nunito", "Arial Rounded MT Bold", "Segoe UI", sans-serif;
       color: var(--ink);
       -webkit-tap-highlight-color: transparent;
+    }
+
+    .phone {
+      position: relative;
+      width: min(420px, 100%);
+      height: 100%;
+      max-height: 860px;
+      padding: 11px;
+      border-radius: 36px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 22%),
+        linear-gradient(165deg, #1f6490, #123a58);
+      box-shadow:
+        0 22px 48px rgba(16, 48, 78, 0.28),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.28);
     }
 
     body.locked { overflow: hidden; }
@@ -53,15 +72,17 @@
 
     .route {
       position: relative;
-      width: min(440px, 100%);
+      width: 100%;
       height: 100%;
-      margin: 0 auto;
+      margin: 0;
       overflow: hidden;
+      border-radius: 26px;
+      background: var(--paper) url("assets/bg.png") center / cover no-repeat;
       padding:
-        calc(12px + env(safe-area-inset-top))
-        calc(6px + env(safe-area-inset-right))
-        calc(8px + env(safe-area-inset-bottom))
-        calc(6px + env(safe-area-inset-left));
+        14px
+        8px
+        10px
+        8px;
       user-select: none;
     }
 
@@ -77,11 +98,33 @@
 
     .line path {
       fill: none;
-      stroke: var(--line);
-      stroke-width: 4;
+      stroke: #0a86d0;
+      stroke-width: 7;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-dasharray: 8 10;
+      stroke-dasharray: 13 12;
+    }
+
+    .line .hint {
+      stroke: #7eb6d4;
+      stroke-width: 2.5;
+      stroke-dasharray: 4 8;
+    }
+
+    .line .whisper {
+      stroke: #5aafd6;
+      stroke-width: 2.4;
+      stroke-dasharray: 3 8;
+    }
+
+    .hop {
+      position: absolute;
+      z-index: 2;
+      width: 30px;
+      height: 30px;
+      color: #2f79a8;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 2px rgba(16, 70, 100, 0.16));
     }
 
     .cp {
@@ -130,6 +173,11 @@
       filter: drop-shadow(0 3px 6px rgba(16, 70, 100, 0.16));
     }
 
+    .cp[data-n="9"] {
+      font-size: calc(18px * var(--fit, 1));
+      padding: calc(9px * var(--fit, 1)) calc(16px * var(--fit, 1));
+    }
+
     .cp:focus-visible {
       outline: 3px solid var(--ink);
       outline-offset: 3px;
@@ -142,14 +190,13 @@
     .cp:active { scale: 0.98; }
 
     #stage {
-      position: fixed;
-      inset: 0;
+      position: absolute;
+      inset: 11px;
       z-index: 20;
-      width: 100%;
-      height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 26px;
       background: var(--paper);
       overflow: hidden;
       overscroll-behavior: contain;
@@ -377,13 +424,18 @@
   </style>
 </head>
 <body>
+  <div class="phone">
   <main class="route">
     <h1 class="sr-only">Чекпоинты</h1>
     <svg class="line" aria-hidden="true" focusable="false">
+      <path class="whisper"/>
+      <path class="whisper"/>
+      <path class="whisper"/>
       <path class="spine"/>
-      <path class="branch"/>
-      <path class="branch"/>
-      <path class="branch"/>
+      <path class="hint"/>
+    </svg>
+    <svg class="hop" viewBox="0 0 64 64" aria-hidden="true">
+      <path fill="currentColor" d="M2 33c10-1 20-2 28-2l7-18c1-3 4-3 4 0l3 18h16c5 0 7 3 5 6L45 42l-3 16c-1 3-4 3-5 0l-7-16H2c-3 0-3-5 0-6z"/>
     </svg>
     <button class="cp" type="button" data-n="1" data-side="left">
       <span class="mark" aria-hidden="true"><img src="assets/icon-1.png?v=5" alt=""></span>
@@ -453,6 +505,7 @@
       <button id="back" type="button">На карту</button>
     </div>
   </div>
+  </div>
 
   <script>
     const videos = {
@@ -480,8 +533,8 @@
     ruler.style.cssText = "position:absolute;left:-9999px;top:0;white-space:nowrap;visibility:hidden;pointer-events:none;";
     document.body.appendChild(ruler);
 
-    const shifts = { 1: -62, 2: 70, 3: -74, 4: 66, 5: -70, 6: 64, 7: -68, 8: 72 };
-    const gapWeights = [0.42, 0.95, 0.62, 1.28, 0.58, 1.16, 0.86];
+    const shifts = { 1: -62, 2: 70, 3: -74, 4: 66, 5: -70, 6: 58, 7: -68 };
+    const gapWeights = [0.62, 1.02, 1.16, 0.56, 1.05, 0.78];
 
     document.querySelectorAll(".cp").forEach((button) => {
       const n = button.dataset.n;
@@ -503,8 +556,10 @@
       const pad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const n = button.dataset.n;
       const limit = n === "9"
-        ? Math.min(route.clientWidth - 36, 250)
-        : Math.min(route.clientWidth * 0.36, 132);
+        ? Math.min(route.clientWidth - 28, 280)
+        : n === "8"
+          ? Math.min(route.clientWidth * 0.4, 148)
+          : Math.min(route.clientWidth * 0.36, 132);
       const lineOf = (list) => measure(list.join(" "), button);
       button.style.maxWidth = "none";
       const name = button.querySelector(".name");
@@ -541,34 +596,46 @@
     function layoutStops() {
       const padTop = parseFloat(getComputedStyle(route).paddingTop);
       const padBottom = parseFloat(getComputedStyle(route).paddingBottom);
-      const rowIds = [8, 7, 6, 5, 4, 3, 2, 1];
+      const rowIds = [7, 8, 6, 5, 4, 3, 2, 1];
       const rows = rowIds.map((id) => document.querySelector(`.cp[data-n="${id}"]`));
       const crown = document.querySelector('.cp[data-n="9"]');
-      let bottomGap = Math.round(Math.min(48, Math.max(28, route.clientHeight * 0.05)));
+      const arrivals = document.querySelector('.cp[data-n="8"]');
+      let bottomGap = Math.round(Math.max(78, route.clientHeight * 0.12));
       let fit = 1;
-      let mark = 96;
-      const objectWidth = (button) => {
+      let mark = 92;
+      const crownScale = 1.36;
+      const objectWidth = (button, size = mark) => {
         const img = button.querySelector("img");
         const ratio = img && img.naturalWidth ? img.naturalWidth / img.naturalHeight : 1.3;
-        return mark * ratio;
+        return size * ratio;
       };
       const fits = () => {
+        const crownMark = Math.round(mark * crownScale);
         route.style.setProperty("--fit", String(fit));
         route.style.setProperty("--mark", mark + "px");
+        crown.style.setProperty("--mark", crownMark + "px");
         document.querySelectorAll(".cp").forEach(fitLabel);
         const heights = rows.map((button) => button.offsetHeight);
         const minGap = 8;
-        const stack = heights.reduce((sum, height) => sum + height, 0) + minGap * (rows.length - 1);
-        const crownBand = mark + crown.offsetHeight + 22;
+        const arrivalLift = mark + 10;
+        const afterArrivals = Math.round(mark * 0.46);
+        const stack = heights.reduce((sum, height) => sum + height, 0) + minGap * (rows.length - 2) + arrivalLift + afterArrivals;
+        const crownBand = crownMark + crown.offsetHeight + 16;
         const available = route.clientHeight - padTop - padBottom - bottomGap - crownBand;
         if (stack > available) return false;
         for (let i = 0; i < rows.length - 2; i++) {
+          if (rows[i].dataset.n === "8" || rows[i + 1].dataset.n === "8") continue;
           const span = heights[i] / 2 + minGap + heights[i + 1] + minGap + heights[i + 2] / 2;
-          if (span < mark * 0.9) return false;
+          if (span < mark * 0.85) return false;
         }
         const half = route.clientWidth / 2;
         const inset = 8;
         for (const button of rows) {
+          if (button.dataset.n === "8") {
+            const span = Math.max(button.offsetWidth, objectWidth(button));
+            if (span + inset * 2 > route.clientWidth) return false;
+            continue;
+          }
           const outside = objectWidth(button) + 4;
           const room = route.clientWidth - inset * 2 - button.offsetWidth;
           if (outside > room) return false;
@@ -576,19 +643,23 @@
           const maxX = half - inset - outside - button.offsetWidth / 2;
           if (minX > maxX) return false;
         }
-        return objectWidth(crown) < route.clientWidth - 16;
+        return objectWidth(crown, crownMark) < route.clientWidth - 20;
       };
-      for (let attempt = 0; attempt < 24; attempt++) {
+      for (let attempt = 0; attempt < 48; attempt++) {
         if (fits()) break;
         if (fit > 0.9) fit = Math.round((fit - 0.02) * 100) / 100;
-        else if (mark > 84) mark -= 4;
-        else if (fit > 0.84) fit = Math.round((fit - 0.02) * 100) / 100;
-        else if (mark > 72) mark -= 4;
-        else if (bottomGap > 18) bottomGap -= 4;
+        else if (mark > 80) mark -= 4;
+        else if (fit > 0.82) fit = Math.round((fit - 0.02) * 100) / 100;
+        else if (mark > 64) mark -= 4;
+        else if (fit > 0.68) fit = Math.round((fit - 0.02) * 100) / 100;
+        else if (mark > 48) mark -= 4;
+        else if (bottomGap > 40) bottomGap -= 4;
         else break;
       }
+      const crownMark = Math.round(mark * crownScale);
       route.style.setProperty("--fit", String(fit));
       route.style.setProperty("--mark", mark + "px");
+      crown.style.setProperty("--mark", crownMark + "px");
       document.querySelectorAll(".cp").forEach(fitLabel);
       const half = route.clientWidth / 2;
       const inset = 8;
@@ -613,20 +684,34 @@
       crown.dataset.side = "center";
       crown.dataset.x = "0";
       crown.style.translate = "-50% 0";
-      crown.style.top = (padTop + mark + 4) + "px";
+      crown.style.top = (padTop + crownMark + 2) + "px";
       const heights = rows.map((button) => button.offsetHeight);
       const minGap = 8;
+      const arrivalLift = mark + 10;
+      const afterArrivals = Math.round(mark * 0.46);
       const firstLift = Math.max(0, mark / 2 - heights[0] / 2);
-      let y = padTop + mark + 4 + crown.offsetHeight + 12 + firstLift;
-      const content = heights.reduce((sum, height) => sum + height, 0) + minGap * (rows.length - 1);
+      let y = padTop + crownMark + 2 + crown.offsetHeight + 14 + firstLift;
+      const content = heights.reduce((sum, height) => sum + height, 0) + minGap * (rows.length - 2) + arrivalLift + afterArrivals;
       const lastDrop = Math.max(0, mark / 2 - heights[heights.length - 1] / 2);
       const free = Math.max(0, route.clientHeight - padBottom - bottomGap - lastDrop - y - content);
       const weightSum = gapWeights.reduce((sum, weight) => sum + weight, 0);
+      let weighted = 0;
       rows.forEach((button, index) => {
-        setX(button, shiftFor(button));
+        if (button.dataset.n === "8") {
+          const span = Math.max(button.offsetWidth, objectWidth(button));
+          setX(button, half - inset - span / 2);
+          button.dataset.side = "center";
+        } else {
+          setX(button, shiftFor(button));
+        }
         button.style.top = y + "px";
         y += heights[index];
-        if (index < gapWeights.length) y += minGap + free * gapWeights[index] / weightSum;
+        if (index === 0) y += arrivalLift;
+        else if (index === 1) y += afterArrivals;
+        if (index > 0 && weighted < gapWeights.length) {
+          y += minGap + free * gapWeights[weighted] / weightSum;
+          weighted += 1;
+        }
       });
       layoutLine();
     }
@@ -661,39 +746,47 @@
         };
       };
       const p = {};
-      for (let n = 1; n <= 8; n++) p[n] = spot(n);
+      for (let n = 1; n <= 9; n++) p[n] = spot(n);
       const c = (n) => ({ x: p[n].x, y: p[n].y });
       const stem = (a, b, c1, c2) => {
         const f = (n) => n.toFixed(1);
         return `M ${f(a.x)} ${f(a.y)} C ${f(c1.x)} ${f(c1.y)}, ${f(c2.x)} ${f(c2.y)}, ${f(b.x)} ${f(b.y)}`;
       };
       const scale = box.width / 390;
-      const node = { x: p[6].x, y: p[6].t - 8 * scale };
-      const neckFrom = { x: p[6].x, y: p[6].t + 7 * scale };
-      const left = { x: p[7].x - (p[7].x - p[7].l) * 0.15, y: p[7].b - 5 * scale };
-      const right = { x: p[8].x + (p[8].r - p[8].x) * 0.2, y: p[8].b - 5 * scale };
-      const neck = stem(
-        neckFrom,
-        node,
-        { x: node.x, y: (neckFrom.y + node.y) / 2 },
-        { x: node.x, y: (neckFrom.y + node.y) / 2 }
-      );
-      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(c)) + " " + neck);
-      const branches = line.querySelectorAll(".branch");
-      const lane = Math.max(node.x + 14 * scale, p[7].r + 12 * scale);
-      branches[0].setAttribute("d", stem(
-        node,
-        left,
-        { x: node.x + (left.x - node.x) * 0.38 - 16 * scale, y: node.y + (left.y - node.y) * 0.55 },
-        { x: left.x - 10 * scale, y: left.y + 18 * scale }
+      const end = { x: p[7].x, y: p[7].b - 4 * scale };
+      const rise = end.y - p[6].y;
+      line.querySelector(".spine").setAttribute("d", curveThrough([1, 2, 3, 4, 5, 6].map(c))
+        + ` C ${(p[6].x - 26 * scale).toFixed(1)} ${(p[6].y + rise * 0.34).toFixed(1)}, ${(end.x - 16 * scale).toFixed(1)} ${(end.y + 20 * scale).toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}`);
+      const fromBoard = { x: p[7].r - 6 * scale, y: p[7].y + 4 * scale };
+      const icon = document.querySelector('.cp[data-n="8"] .mark').getBoundingClientRect();
+      const toArrivals = {
+        x: icon.left + icon.width * 0.42 - box.left,
+        y: icon.top + 4 * scale - box.top
+      };
+      line.querySelector(".hint").setAttribute("d", stem(
+        fromBoard,
+        toArrivals,
+        { x: fromBoard.x + (toArrivals.x - fromBoard.x) * 0.45, y: fromBoard.y + 12 * scale },
+        { x: toArrivals.x - 6 * scale, y: toArrivals.y - 16 * scale }
       ));
-      branches[1].setAttribute("d", stem(
-        node,
-        right,
-        { x: lane, y: node.y + (right.y - node.y) * 0.42 },
-        { x: Math.max(right.x, lane - 6 * scale), y: right.y + 16 * scale }
-      ));
-      branches[2].setAttribute("d", "");
+      const fromCrown = { x: p[9].x, y: p[9].b + 3 * scale };
+      const whispers = line.querySelectorAll(".whisper");
+      [[8, 24], [6, 0], [4, -26]].forEach(([n, bend], index) => {
+        const to = { x: p[n].x, y: p[n].t - 6 * scale };
+        whispers[index].setAttribute("d", stem(
+          fromCrown,
+          to,
+          { x: fromCrown.x + bend * scale, y: fromCrown.y + (to.y - fromCrown.y) * 0.4 },
+          { x: to.x + bend * 0.25 * scale, y: to.y - (to.y - fromCrown.y) * 0.18 }
+        ));
+      });
+      const hop = document.querySelector(".hop");
+      const hx = (fromBoard.x + toArrivals.x) / 2;
+      const hy = (fromBoard.y + toArrivals.y) / 2;
+      const angle = Math.atan2(toArrivals.y - fromBoard.y, toArrivals.x - fromBoard.x) * 180 / Math.PI;
+      hop.style.left = hx + "px";
+      hop.style.top = hy + "px";
+      hop.style.transform = `translate(-50%, -50%) rotate(${angle.toFixed(1)}deg)`;
     }
 
     function layoutVideo() {
