@@ -240,6 +240,7 @@
 
     #stage.is-video .film {
       flex-direction: column;
+      justify-content: flex-start;
       height: 100%;
       box-sizing: border-box;
       padding:
@@ -861,13 +862,36 @@
       hop.style.transform = "translate(-50%, -50%)";
     }
 
+    function fillPoints(lines) {
+      points.classList.toggle("is-long", lines.length > 4);
+      points.replaceChildren(...lines.map((text) => {
+        const item = document.createElement("li");
+        item.textContent = text;
+        return item;
+      }));
+    }
+
+    function tallestPointsHeight() {
+      const current = [...points.children].map((item) => item.textContent);
+      const currentLong = points.classList.contains("is-long");
+      let tallest = 0;
+      Object.values(captions).forEach((lines) => {
+        fillPoints(lines);
+        tallest = Math.max(tallest, points.offsetHeight);
+      });
+      points.classList.toggle("is-long", currentLong);
+      fillPoints(current);
+      return tallest;
+    }
+
     function layoutVideo() {
       if (!open || video.hidden || !video.videoWidth) return;
       const bounds = stage.getBoundingClientRect();
       const filmStyle = getComputedStyle(film);
       const padY = parseFloat(filmStyle.paddingTop) + parseFloat(filmStyle.paddingBottom);
       const gap = parseFloat(filmStyle.rowGap || filmStyle.gap) || 0;
-      const extras = [brand, points].reduce((sum, el) => sum + (el.hidden ? 0 : el.offsetHeight), 0);
+      const captionHeight = points.hidden ? 0 : tallestPointsHeight();
+      const extras = (brand.hidden ? 0 : brand.offsetHeight) + captionHeight;
       const visible = [brand, points].filter((el) => !el.hidden).length + 1;
       const maxH = Math.max(110, bounds.height - padY - extras - gap * (visible - 1) - 4);
       const innerW = bounds.width - parseFloat(filmStyle.paddingLeft) - parseFloat(filmStyle.paddingRight);
@@ -894,13 +918,7 @@
       if (src) {
         stage.classList.remove("is-stub");
         stage.classList.add("is-video");
-        const lines = captions[n] || [];
-        points.classList.toggle("is-long", lines.length > 4);
-        points.replaceChildren(...lines.map((text) => {
-          const item = document.createElement("li");
-          item.textContent = text;
-          return item;
-        }));
+        fillPoints(captions[n] || []);
         brand.hidden = false;
         points.hidden = false;
         stub.hidden = true;
