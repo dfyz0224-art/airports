@@ -292,6 +292,25 @@
       margin-top: 4px;
     }
 
+    .lead {
+      width: min(92vw, 420px);
+      margin: 0;
+      padding: 0 24px;
+      text-align: center;
+      color: var(--ink);
+      font-weight: 900;
+      font-size: clamp(17px, 4.6vw, 21px);
+      line-height: 1.2;
+    }
+
+    #stage.is-long .lead {
+      font-size: clamp(15px, 4vw, 18px);
+    }
+
+    #stage.is-long.is-video .film {
+      gap: 10px;
+    }
+
     #video {
       display: block;
       width: 100%;
@@ -481,6 +500,7 @@
         <div id="spinner" hidden></div>
         <button id="replay" type="button" hidden>Ещё раз</button>
       </div>
+      <p class="lead" hidden></p>
       <ul class="points" hidden></ul>
     </div>
     <p id="video-error" hidden>Не удалось открыть видео</p>
@@ -509,58 +529,83 @@
     };
 
     const captions = {
-      1: [
-        "Отдельные места для парковки",
-        "Специальная навигация и знаки",
-        "Игровые зоны для детей"
-      ],
-      2: [
-        "Зона подготовки к досмотру",
-        "Наличие специальных удерживающих устройств",
-        "Приоритетный досмотр пассажиров с детьми"
-      ],
-      3: [
-        "Приоритетная регистрация",
-        "Выделенная стойка для многодетных семей",
-        "Посадочные талоны для любимых игрушек"
-      ],
-      4: [
-        "Игровые зоны",
-        "Зона для сна",
-        "Зона гигиены и семейный туалет",
-        "Зона для кормления",
-        "Стиральные и сушильные машины"
-      ],
-      6: [
-        "Комнаты для кормления и пеленания",
-        "Собаки эмоциональной поддержки",
-        "Детский кинотеатр и зона с игровыми приставками",
-        "Игровые зоны во всех залах ожидания",
-        "Семейные туалеты",
-        "Магазины с детскими товарами",
-        "Детское меню в кафе и специальная линия питания в бизнес-зале"
-      ],
-      7: [
-        "Возможность проходить на посадку вне очереди",
-        "Специальные объявления о приоритете для пассажиров с детьми"
-      ],
-      8: [
-        "Комната для кормления и пеленания",
-        "Игровая зона для маленьких пассажиров"
-      ],
-      9: [
-        "Аудиовизуальная информация о приоритетном обслуживании",
-        "Специальный раздел на сайте",
-        "Бесплатные коляски для перемещения по терминалу",
-        "Выделенная зона для встречи несопровождаемых детей",
-        "Сервис сопровождения детей, летящих без родителей",
-        "Навигация по детским сервисам"
-      ]
+      1: {
+        lead: "Семье удобно ещё до входа",
+        lines: [
+          "Своя парковка у самого терминала",
+          "Знаки, чтобы не заблудиться с детьми",
+          "Игровые зоны, пока ждёте"
+        ]
+      },
+      2: {
+        lead: "Досмотр без спешки и очереди",
+        lines: [
+          "Место, где можно спокойно собраться",
+          "Удерживающие устройства для малышей",
+          "Семьи с детьми проходят первыми"
+        ]
+      },
+      3: {
+        lead: "На рейс — без лишней суеты",
+        lines: [
+          "Регистрация без общей очереди",
+          "Своя стойка для многодетных семей",
+          "Посадочный талон и для любимой игрушки"
+        ]
+      },
+      4: {
+        lead: "Комната, где можно выдохнуть",
+        lines: [
+          "Уголок, чтобы поиграть",
+          "Тихое место для сна",
+          "Семейный туалет и всё для гигиены",
+          "Укромно покормить малыша",
+          "Стиральная и сушильная машины"
+        ]
+      },
+      6: {
+        lead: "Ожидание, от которого не устают",
+        lines: [
+          "Комнаты, чтобы покормить и перепеленать",
+          "Собаки, рядом с которыми спокойнее",
+          "Кинотеатр и игровые приставки",
+          "Игровые зоны в каждом зале",
+          "Туалет, куда можно всей семьёй",
+          "Магазины с тем, что нужно детям",
+          "Детское меню и своя линия в бизнес-зале"
+        ]
+      },
+      7: {
+        lead: "Семьи садятся первыми",
+        lines: [
+          "На посадку — мимо общей очереди",
+          "По громкой связи позовут семьи раньше"
+        ]
+      },
+      8: {
+        lead: "После прилёта тоже есть куда",
+        lines: [
+          "Комната, чтобы покормить и перепеленать",
+          "Игровая для самых маленьких"
+        ]
+      },
+      9: {
+        lead: "Рядом на всём пути",
+        lines: [
+          "На экранах видно, кому уступают дорогу",
+          "Всё о сервисах — в отдельном разделе сайта",
+          "Бесплатная коляска на весь терминал",
+          "Своё место встречи, если ребёнок летит один",
+          "Сопроводим ребёнка без родителей",
+          "Навигация прямо к детским сервисам"
+        ]
+      }
     };
 
     const stage = document.querySelector("#stage");
     const film = document.querySelector(".film");
     const brand = document.querySelector(".brand");
+    const lead = document.querySelector(".lead");
     const points = document.querySelector(".points");
     const video = document.querySelector("#video");
     const stub = document.querySelector("#stub");
@@ -837,8 +882,8 @@
       const filmStyle = getComputedStyle(film);
       const padY = parseFloat(filmStyle.paddingTop) + parseFloat(filmStyle.paddingBottom);
       const gap = parseFloat(filmStyle.rowGap || filmStyle.gap) || 0;
-      const extras = [brand, points].reduce((sum, el) => sum + (el.hidden ? 0 : el.offsetHeight), 0);
-      const visible = [brand, points].filter((el) => !el.hidden).length + 1;
+      const extras = [brand, lead, points].reduce((sum, el) => sum + (el.hidden ? 0 : el.offsetHeight), 0);
+      const visible = [brand, lead, points].filter((el) => !el.hidden).length + 1;
       const maxH = Math.max(110, bounds.height - padY - extras - gap * (visible - 1) - 4);
       const innerW = bounds.width - parseFloat(filmStyle.paddingLeft) - parseFloat(filmStyle.paddingRight);
       const ratio = video.videoWidth / video.videoHeight;
@@ -864,14 +909,19 @@
       if (src) {
         stage.classList.remove("is-stub");
         stage.classList.add("is-video");
-        const lines = captions[n] || [];
-        points.classList.toggle("is-long", lines.length > 4);
+        const card = captions[n] || { lead: "", lines: [] };
+        const lines = card.lines;
+        const long = lines.length > 4;
+        stage.classList.toggle("is-long", long);
+        points.classList.toggle("is-long", long);
+        lead.textContent = card.lead;
         points.replaceChildren(...lines.map((text) => {
           const item = document.createElement("li");
           item.textContent = text;
           return item;
         }));
         brand.hidden = false;
+        lead.hidden = false;
         points.hidden = false;
         stub.hidden = true;
         video.hidden = false;
@@ -884,7 +934,9 @@
       } else {
         video.pause();
         brand.hidden = true;
+        lead.hidden = true;
         points.hidden = true;
+        stage.classList.remove("is-long");
         stage.classList.remove("is-video");
         stage.classList.add("is-stub");
         theme.setAttribute("content", "#c1dffb");
@@ -903,6 +955,7 @@
       stage.hidden = true;
       stage.classList.remove("is-stub");
       stage.classList.remove("is-video");
+      stage.classList.remove("is-long");
       document.body.classList.remove("locked");
       theme.setAttribute("content", "#c1dffb");
     }
