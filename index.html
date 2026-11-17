@@ -283,6 +283,15 @@
       margin-top: 8px;
     }
 
+    .points.is-long {
+      font-size: clamp(13px, 3.4vw, 15px);
+      line-height: 1.25;
+    }
+
+    .points.is-long li + li {
+      margin-top: 4px;
+    }
+
     #video {
       display: block;
       width: 100%;
@@ -472,11 +481,7 @@
         <div id="spinner" hidden></div>
         <button id="replay" type="button" hidden>Ещё раз</button>
       </div>
-      <ul class="points" hidden>
-        <li>Отдельные места рядом с терминалом</li>
-        <li>Специальная навигация и знаки</li>
-        <li>Детская площадка на привокзальной площади</li>
-      </ul>
+      <ul class="points" hidden></ul>
     </div>
     <p id="video-error" hidden>Не удалось открыть видео</p>
     <div id="stub" hidden>
@@ -493,7 +498,66 @@
 
   <script>
     const videos = {
-      1: "assets/videoplanes.mp4?v=2"
+      1: "assets/video-1.mp4",
+      2: "assets/video-2.mp4",
+      3: "assets/video-3.mp4",
+      4: "assets/video-4.mp4",
+      6: "assets/video-6.mp4",
+      7: "assets/video-7.mp4",
+      8: "assets/video-8.mp4",
+      9: "assets/video-9.mp4"
+    };
+
+    const captions = {
+      1: [
+        "Отдельные места для парковки",
+        "Специальная навигация и знаки",
+        "Игровые зоны для детей"
+      ],
+      2: [
+        "Зона подготовки к досмотру",
+        "Наличие специальных удерживающих устройств",
+        "Приоритетный досмотр пассажиров с детьми"
+      ],
+      3: [
+        "Приоритетная регистрация",
+        "Выделенная стойка для многодетных семей",
+        "Посадочные талоны для любимых игрушек"
+      ],
+      4: [
+        "Игровые зоны",
+        "Зона для сна",
+        "Зона гигиены и семейный туалет",
+        "Зона для кормления",
+        "Стиральные и сушильные машины"
+      ],
+      6: [
+        "Комнаты для кормления и пеленания",
+        "Собаки эмоциональной поддержки",
+        "Детский кинотеатр и зона с игровыми приставками",
+        "Игровые зоны во всех залах ожидания",
+        "Семейные туалеты",
+        "Магазины с детскими товарами",
+        "Детское меню в кафе и специальная линия питания в бизнес-зале"
+      ],
+      7: [
+        "Возможность проходить на посадку вне очереди",
+        "Специальные объявления о приоритете для пассажиров с детьми"
+      ],
+      8: [
+        "Комната для кормления и пеленания",
+        "Игровая зона для маленьких пассажиров"
+      ],
+      9: [
+        "Аудиовизуальная информация о приоритетном обслуживании",
+        "Специальный раздел на сайте",
+        "Бесплатные коляски для перемещения по терминалу",
+        "Знаки «Потерялся \u2013 оставайся здесь»",
+        "Выделенная зона для встречи несопровождаемых детей",
+        "Сервис сопровождения детей, летящих без родителей",
+        "Навигация по детским сервисам",
+        "Комплименты для детей на случай задержки рейса"
+      ]
     };
 
     const stage = document.querySelector("#stage");
@@ -802,9 +866,15 @@
       if (src) {
         stage.classList.remove("is-stub");
         stage.classList.add("is-video");
-        const parking = n === 1;
-        brand.hidden = !parking;
-        points.hidden = !parking;
+        const lines = captions[n] || [];
+        points.classList.toggle("is-long", lines.length > 4);
+        points.replaceChildren(...lines.map((text) => {
+          const item = document.createElement("li");
+          item.textContent = text;
+          return item;
+        }));
+        brand.hidden = false;
+        points.hidden = false;
         stub.hidden = true;
         video.hidden = false;
         spinner.hidden = false;
