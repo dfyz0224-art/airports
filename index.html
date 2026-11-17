@@ -35,7 +35,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 0;
       font-family: "Nunito", "Arial Rounded MT Bold", "Segoe UI", sans-serif;
       color: var(--ink);
       -webkit-tap-highlight-color: transparent;
@@ -43,17 +43,10 @@
 
     .phone {
       position: relative;
-      width: min(420px, 100%);
+      width: 100%;
       height: 100%;
-      max-height: 860px;
-      padding: 11px;
-      border-radius: 36px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 22%),
-        linear-gradient(165deg, #1f6490, #123a58);
-      box-shadow:
-        0 22px 48px rgba(16, 48, 78, 0.28),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+      padding: 0;
+      background: none;
     }
 
     body.locked { overflow: hidden; }
@@ -76,13 +69,12 @@
       height: 100%;
       margin: 0;
       overflow: hidden;
-      border-radius: 26px;
+      border-radius: 0;
       background: var(--paper) url("assets/bg.png") center / cover no-repeat;
       padding:
-        14px
-        8px
-        10px
-        8px;
+        calc(14px * var(--ui, 1))
+        calc(8px * var(--ui, 1))
+        calc(10px * var(--ui, 1));
       user-select: none;
     }
 
@@ -99,22 +91,22 @@
     .line path {
       fill: none;
       stroke: #0a86d0;
-      stroke-width: 7;
+      stroke-width: calc(7px * var(--ui, 1));
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-dasharray: 13 12;
+      stroke-dasharray: calc(13px * var(--ui, 1)) calc(12px * var(--ui, 1));
     }
 
     .line .hint {
       stroke: #7eb6d4;
-      stroke-width: 2.5;
-      stroke-dasharray: 4 8;
+      stroke-width: calc(2.5px * var(--ui, 1));
+      stroke-dasharray: calc(4px * var(--ui, 1)) calc(8px * var(--ui, 1));
     }
 
     .hop {
       position: absolute;
       z-index: 2;
-      width: 44px;
+      width: calc(44px * var(--ui, 1));
       height: auto;
       pointer-events: none;
       filter: drop-shadow(0 1px 1px rgba(16, 70, 100, 0.16));
@@ -184,12 +176,12 @@
 
     #stage {
       position: absolute;
-      inset: 11px;
+      inset: 0;
       z-index: 20;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 26px;
+      border-radius: 0;
       background: var(--paper);
       overflow: hidden;
       overscroll-behavior: contain;
@@ -214,10 +206,10 @@
     #close {
       position: absolute;
       z-index: 5;
-      top: calc(12px + env(safe-area-inset-top));
-      left: calc(12px + env(safe-area-inset-left));
-      width: 46px;
-      height: 46px;
+      top: calc(12px * var(--ui, 1) + env(safe-area-inset-top));
+      left: calc(12px * var(--ui, 1) + env(safe-area-inset-left));
+      width: calc(46px * var(--ui, 1));
+      height: calc(46px * var(--ui, 1));
       border: 0;
       border-radius: 50%;
       padding: 0;
@@ -230,7 +222,7 @@
       touch-action: manipulation;
     }
 
-    #close svg { width: 22px; height: 22px; display: block; }
+    #close svg { width: calc(22px * var(--ui, 1)); height: calc(22px * var(--ui, 1)); display: block; }
 
     #close:focus-visible {
       outline: 3px solid #fff;
@@ -251,14 +243,14 @@
       height: 100%;
       box-sizing: border-box;
       padding:
-        calc(68px + env(safe-area-inset-top))
+        calc(68px * var(--ui, 1) + env(safe-area-inset-top))
         0
-        calc(18px + env(safe-area-inset-bottom));
-      gap: 16px;
+        calc(18px * var(--ui, 1) + env(safe-area-inset-bottom));
+      gap: calc(16px * var(--ui, 1));
     }
 
     .brand {
-      width: min(84vw, 340px);
+      width: min(84vw, calc(340px * var(--ui, 1)));
       height: auto;
       display: block;
     }
@@ -271,56 +263,56 @@
 
     .points {
       list-style: none;
-      width: min(92vw, 420px);
+      width: min(92vw, calc(420px * var(--ui, 1)));
       margin: 0;
-      padding: 0 14px;
+      padding: 0 calc(14px * var(--ui, 1));
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: calc(8px * var(--ui, 1));
     }
 
     .points li {
       position: relative;
       margin: 0;
-      padding: 7px 12px 7px 34px;
-      border-radius: 16px;
+      padding: calc(7px * var(--ui, 1)) calc(12px * var(--ui, 1)) calc(7px * var(--ui, 1)) calc(34px * var(--ui, 1));
+      border-radius: calc(16px * var(--ui, 1));
       background: rgba(255, 255, 255, 0.9);
       box-shadow: 0 6px 14px rgba(16, 70, 100, 0.1);
       color: var(--ink);
       font-weight: 800;
-      font-size: clamp(15px, 4.1vw, 18px);
+      font-size: calc(clamp(15px, 4.1vw, 18px) * var(--ui, 1));
       line-height: 1.28;
     }
 
     .points li::before {
       content: "";
       position: absolute;
-      left: 12px;
+      left: calc(12px * var(--ui, 1));
       top: 50%;
-      width: 10px;
-      height: 10px;
-      margin-top: -5px;
+      width: calc(10px * var(--ui, 1));
+      height: calc(10px * var(--ui, 1));
+      margin-top: calc(-5px * var(--ui, 1));
       border-radius: 50%;
       background: #0a86d0;
       box-shadow: 0 0 0 4px rgba(10, 134, 208, 0.18);
     }
 
     .points.is-long {
-      gap: 5px;
+      gap: calc(5px * var(--ui, 1));
     }
 
     .points.is-long li {
-      padding: 5px 10px 5px 28px;
-      border-radius: 12px;
-      font-size: clamp(13px, 3.3vw, 15px);
+      padding: calc(5px * var(--ui, 1)) calc(10px * var(--ui, 1)) calc(5px * var(--ui, 1)) calc(28px * var(--ui, 1));
+      border-radius: calc(12px * var(--ui, 1));
+      font-size: calc(clamp(13px, 3.3vw, 15px) * var(--ui, 1));
       line-height: 1.22;
     }
 
     .points.is-long li::before {
-      left: 10px;
-      width: 8px;
-      height: 8px;
-      margin-top: -4px;
+      left: calc(10px * var(--ui, 1));
+      width: calc(8px * var(--ui, 1));
+      height: calc(8px * var(--ui, 1));
+      margin-top: calc(-4px * var(--ui, 1));
       box-shadow: 0 0 0 3px rgba(10, 134, 208, 0.16);
     }
 
@@ -633,13 +625,14 @@
       const style = getComputedStyle(button);
       const pad = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
       const n = button.dataset.n;
+      const ui = parseFloat(getComputedStyle(route).getPropertyValue("--ui")) || 1;
       const limit = n === "9"
-        ? Math.min(route.clientWidth - 28, 280)
+        ? Math.min(route.clientWidth - 28 * ui, 280 * ui)
         : n === "8"
-          ? Math.min(route.clientWidth * 0.4, 148)
+          ? Math.min(route.clientWidth * 0.4, 148 * ui)
           : n === "2"
-            ? Math.min(route.clientWidth * 0.48, 168)
-            : Math.min(route.clientWidth * 0.36, 132);
+            ? Math.min(route.clientWidth * 0.48, 168 * ui)
+            : Math.min(route.clientWidth * 0.36, 132 * ui);
       const lineOf = (list) => measure(list.join(" "), button);
       button.style.maxWidth = "none";
       const name = button.querySelector(".name");
@@ -674,15 +667,17 @@
     }
 
     function layoutStops() {
+      const ui = Math.max(1, Math.min(route.clientWidth / 390, route.clientHeight / 820));
+      route.style.setProperty("--ui", String(Math.round(ui * 100) / 100));
       const padTop = parseFloat(getComputedStyle(route).paddingTop);
       const padBottom = parseFloat(getComputedStyle(route).paddingBottom);
       const rowIds = [7, 8, 6, 4, 3, 2, 1];
       const rows = rowIds.map((id) => document.querySelector(`.cp[data-n="${id}"]`));
       const crown = document.querySelector('.cp[data-n="9"]');
       const arrivals = document.querySelector('.cp[data-n="8"]');
-      let bottomGap = Math.round(Math.max(156, route.clientHeight * 0.22));
-      let fit = 1;
-      let mark = 92;
+      let bottomGap = Math.round(Math.max(156 * ui, route.clientHeight * 0.22));
+      let fit = ui;
+      let mark = Math.round(92 * ui);
       const crownScale = 1.36;
       const objectWidth = (button, size = mark) => {
         const img = button.querySelector("img");
@@ -725,15 +720,17 @@
         }
         return objectWidth(crown, crownMark) < route.clientWidth - 20;
       };
+      const fitStep = Math.round(ui * 2) / 100;
+      const markStep = 4 * ui;
       for (let attempt = 0; attempt < 48; attempt++) {
         if (fits()) break;
-        if (fit > 0.9) fit = Math.round((fit - 0.02) * 100) / 100;
-        else if (mark > 80) mark -= 4;
-        else if (fit > 0.82) fit = Math.round((fit - 0.02) * 100) / 100;
-        else if (mark > 64) mark -= 4;
-        else if (fit > 0.68) fit = Math.round((fit - 0.02) * 100) / 100;
-        else if (mark > 48) mark -= 4;
-        else if (bottomGap > 88) bottomGap -= 4;
+        if (fit > 0.9 * ui) fit = Math.round((fit - fitStep) * 100) / 100;
+        else if (mark > 80 * ui) mark -= markStep;
+        else if (fit > 0.82 * ui) fit = Math.round((fit - fitStep) * 100) / 100;
+        else if (mark > 64 * ui) mark -= markStep;
+        else if (fit > 0.68 * ui) fit = Math.round((fit - fitStep) * 100) / 100;
+        else if (mark > 48 * ui) mark -= markStep;
+        else if (bottomGap > 88 * ui) bottomGap -= markStep;
         else break;
       }
       const crownMark = Math.round(mark * crownScale);
@@ -742,14 +739,15 @@
       crown.style.setProperty("--mark", crownMark + "px");
       document.querySelectorAll(".cp").forEach(fitLabel);
       const half = route.clientWidth / 2;
-      const inset = 8;
+      const inset = 8 * ui;
+      const xScale = route.clientWidth / 390;
       const setX = (button, x) => {
         button.dataset.x = String(x);
         button.style.translate = `calc(-50% + ${x}px) 0`;
         button.dataset.side = x < 0 ? "left" : "right";
       };
       const shiftFor = (button) => {
-        const preferred = shifts[button.dataset.n];
+        const preferred = shifts[button.dataset.n] * xScale;
         const outside = objectWidth(button) + 4;
         const pillW = button.offsetWidth;
         if (preferred < 0) {
@@ -766,8 +764,8 @@
       crown.style.translate = "-50% 0";
       crown.style.top = (padTop + crownMark + 2) + "px";
       const heights = rows.map((button) => button.offsetHeight);
-      const minGap = 8;
-      const spread = Math.round(Math.min(14, Math.max(8, mark * 0.18)));
+      const minGap = 8 * ui;
+      const spread = Math.round(Math.min(14 * ui, Math.max(8 * ui, mark * 0.18)));
       const tightGaps = 4;
       const arrivalLift = Math.max(14, mark + 10 - spread * tightGaps);
       const afterArrivals = Math.round(mark * 0.46);
