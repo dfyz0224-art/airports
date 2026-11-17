@@ -668,7 +668,7 @@
 
     function layoutStops() {
       const ui = Math.max(1, Math.min(route.clientWidth / 390, route.clientHeight / 820));
-      route.style.setProperty("--ui", String(Math.round(ui * 100) / 100));
+      document.querySelector(".phone").style.setProperty("--ui", String(Math.round(ui * 100) / 100));
       const padTop = parseFloat(getComputedStyle(route).paddingTop);
       const padBottom = parseFloat(getComputedStyle(route).paddingBottom);
       const rowIds = [7, 8, 6, 4, 3, 2, 1];
